@@ -1,0 +1,59 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Preference
+        android:fragment="com.example.habitmanager.preferencies.AccountFragment"
+        android:icon="@drawable/ic_account"
+        android:key="@string/key_account"
+        android:title="@string/title_account"
+        android:summary="@string/summary_account"/>
+
+    <PreferenceCategory
+        android:title="@string/notification_header">
+        <SwitchPreferenceCompat
+            android:title="@string/activate_notification"
+            android:key="@string/key_activate_notification"
+            android:defaultValue="true">
+        </SwitchPreferenceCompat>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/list_header">
+        <ListPreference
+            android:key="@string/key_list"
+            android:title="@string/listSetting"
+            android:entries="@array/list_entries"
+            android:entryValues="@array/list_values">
+        </ListPreference>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/language_header">
+        <ListPreference
+            android:key="@string/key_language"
+            android:title="@string/languageSetting"
+            android:entries="@array/language_entries"
+            android:entryValues="@array/language_values"
+            android:defaultValue="@string/sortName">
+        </ListPreference>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/theme_header">
+        <SwitchPreferenceCompat
+            android:icon="@drawable/ic_night"
+            android:key="@string/key_night"
+            android:title="@string/night_mode"
+            android:defaultValue="true"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory>
+        <Preference
+            android:fragment="com.example.habitmanager.ui.LicenseFragment"
+            android:icon="@drawable/ic_info"
+            android:key="@string/key_license"
+            android:title="@string/title_license"/>
+    </PreferenceCategory>
+
+
+</PreferenceScreen>

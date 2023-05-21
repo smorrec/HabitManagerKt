@@ -1,0 +1,21 @@
+<resources>
+    <string-array name="list_entries">
+        <item>@string/sortName</item>
+        <item>@string/sortCategory</item>
+    </string-array>
+
+    <string-array name="list_values">
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <string-array name="language_entries">
+        <item>@string/sp</item>
+        <item>@string/en</item>
+    </string-array>
+
+    <string-array name="language_values">
+        <item>es</item>
+        <item>en</item>
+    </string-array>
+</resources>

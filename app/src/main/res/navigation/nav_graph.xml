@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/SplashFragment">
+
+    <fragment
+        android:id="@+id/SplashFragment"
+        android:name="com.example.habitmanager.ui.SplashFragment"
+        android:label="@string/splash_fragment_label"
+        tools:layout="@layout/fragment_splash">
+
+        <action
+            android:id="@+id/action_FirstFragment_to_SecondFragment"
+            app:destination="@id/MainFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_SplashFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/MainFragment"
+        android:name="com.example.habitmanager.ui.calendar.MainFragment"
+        android:label="@string/main_fragment_label"
+        tools:layout="@layout/fragment_main">
+    </fragment>
+    <fragment
+        android:id="@+id/habitListFragment"
+        android:name="com.example.habitmanager.ui.habit.HabitListFragment"
+        android:label="@string/Habit"
+        tools:layout="@layout/fragment_habit_list" >
+        <action
+            android:id="@+id/action_habitListFragment_to_habitViewFragment"
+            app:destination="@id/habitViewFragment"/>
+        <action
+            android:id="@+id/action_habitListFragment_to_habitManagerFragment"
+            app:destination="@id/habitManagerFragment"
+            app:launchSingleTop="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/habitViewFragment"
+        android:name="com.example.habitmanager.ui.habit.HabitViewFragment"
+        android:label="@string/HabitView" >
+    </fragment>
+    <fragment
+        android:id="@+id/aboutUsFragment"
+        android:name="com.example.habitmanager.ui.AboutUsFragment"
+        android:label="@string/AboutUs"
+        tools:layout="@layout/fragment_about_us"/>
+    <fragment
+        android:id="@+id/habitManagerFragment"
+        android:name="com.example.habitmanager.ui.habit.HabitManagerFragment"
+        android:label="@string/HabitManager" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.habitmanager.preferencies.SettingsFragment"
+        android:label="@string/settings_label"/>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.habitmanager.ui.login.LoginFragment"
+        android:label="LoginFragment" >
+        <action
+            android:id="@+id/action_loginFragment_to_MainFragment"
+            app:destination="@id/MainFragment" />
+    </fragment>
+</navigation>

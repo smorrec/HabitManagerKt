@@ -1,0 +1,128 @@
+<resources>
+    <string name="app_name">HabitManager</string>
+    <string name="action_settings">Ajustes</string>
+
+    <!-- Strings used for fragments for navigation -->
+    <string name="splash_fragment_label">Splash Fragment</string>
+    <string name="main_fragment_label">Tareas</string>
+    <string name="next">Siguiente</string>
+    <string name="previous">Anterior</string>
+
+    <string name="btnEditHabit">Editar Hábito</string>
+    <string name="btnDeleteHabit">Borrar Hábito</string>
+    <string name="HabitName">Introduce el nombre del Hábito</string>
+    <string name="HabitDescription">Añade una corta descripción (Opcional)</string>
+    <string name="DatePicker">Escoge una fecha de inicio</string>
+    <string name="EndDatePicker">Escoge una fecha de finalización</string>
+    <string name="addFAB">Añadir este nuevo hábito</string>
+    <string name="btnViewHabit">btn View Habit</string>
+    <string name="layoutCurrentDaysCount">Días totales : </string>
+    <string name="layoutCompletedDaysCount">Días completados : </string>
+    <string name="backFAB">Volver</string>
+    <string name="action_list">Hábitos</string>
+    <string name="calendarBack"><![CDATA[<-]]></string>
+    <string name="frontBack"><![CDATA[->]]></string>
+    <string name="dayOfWeek">DíaDeLaSemana</string>
+    <string name="monthYear">MesAño</string>
+    <string name="addedHabit">Un nuevo hábito ha sido añadido</string>
+    <string name="deletedHabit">Un hábito ha sido eliminado</string>
+    <string name="editedHabit">Un hábito ha sido editado</string>
+
+    <!-- AboutUs Strings-->
+    <string name="name">Sergio</string>
+    <string name="activity">Estudiante de CFGS DAM</string>
+    <string name="brief"> Furuto Técnico Superior en Desarrollo de Aplicaciones Multiplataforma</string>
+    <string name="gitHub">smorrec/HabitManager</string>
+    <string name="linkedIn">sergio-morales-recio-b23661178</string>
+    <string name="action_AboutUs">Sobre Mí</string>
+    <string name="Habit">Hábitos</string>
+    <string name="tittleDeleteHabit">Borrar Hábito</string>
+    <string name="messageDeleteDependency">¿Quiere eliminar el elemento %1$s?</string>
+    <string name="orderByCategory">orderByCategory</string>
+    <string name="HabitView">Detalles</string>
+    <string name="HabitManager">Añadir/Editar Hábito</string>
+    <string name="AboutUs">Sobre Mí</string>
+
+
+    <string name="Description">Descripción</string>
+    <string name="undo">Deshacer</string>
+    <string name="orderByName">Ordenar por nombre</string>
+    <string name="add_transition">add_transition</string>
+    <string name="list">list</string>
+    <string name="editHabit">Editar</string>
+    <string name="viewHabit">Detalles</string>
+    <string name="monitorizeHabit">Monitorización</string>
+    <string name="homeMenu">Tareas</string>
+    <string name="listMenu">Hábitos</string>
+    <string name="listCompleted">Completados</string>
+    <string name="deleteHabit">Eliminar</string>
+    <string name="completeHabit">Archivar</string>
+    <string name="label_items">Otros</string>
+    <string name="main_items">Navegación</string>
+    <string name="action_Profile">Perfil</string>
+    <string name="channel_name">CrearHabitoCh</string>
+    <string name="account_header">Cuenta</string>
+    <string name="key_email">key_email</string>
+    <string name="title_email">Email</string>
+    <string name="key_password">key_password</string>
+    <string name="title_password">Contraseña</string>
+    <string name="key_account">key_account</string>
+    <string name="title_account">Cuenta</string>
+    <string name="summary_account">Modificar cuenta</string>
+    <string name="notification_header">Notificaciones</string>
+    <string name="activate_notification">Activar Notificaciones</string>
+    <string name="key_activate_notification">key_active_notification</string>
+    <string name="mpachart_license">Copyright 2020 Philipp Jahoda Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.</string>
+    <string name="about_license">MIT License  Copyright © 2016   Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:  The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.  THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</string>
+    <string name="MPAndroidChart">MPAndroidChart</string>
+    <string name="MaterialAbout">MaterialAbout</string>
+    <string name="key_license">key_license</string>
+    <string name="title_license">Licencias</string>
+    <string name="key_night">key_night</string>
+    <string name="night_mode">Modo Nocturno</string>
+    <string name="addHabitNotTitle">Hábito añadido</string>
+    <string name="addHabitNotTxt">"Ha añadido el hábito %1$s"</string>
+    <string name="settings_label">Ajustes</string>
+    <string name="list_header">Listar</string>
+    <string name="key_list">key_list</string>
+    <string name="listSetting">Criterio de ordenación</string>
+    <string name="sortName">Nombre</string>
+    <string name="sortCategory">Categoría</string>
+    <string name="theme_header">Tema</string>
+    <string name="language_header">Idioma</string>
+    <string name="key_language">key_language</string>
+    <string name="languageSetting">Idioma de la aplicación</string>
+    <string name="sp">Español</string>
+    <string name="en">Inglés</string>
+    <string name="delHabitNotTitle">Hábito eliminado</string>
+    <string name="delHabitNotTxt">"Ha eliminado el hábito %1$s"</string>
+    <string name="undoText">Deshacer eliminar</string>
+    <string name="sunday">Dom</string>
+    <string name="monday">Lun</string>
+    <string name="tuesday">Mar</string>
+    <string name="wednesday">Mie</string>
+    <string name="thursday">Jue</string>
+    <string name="friday">Vie</string>
+    <string name="saturday">Sáb</string>
+    <string name="january">Enero</string>
+    <string name="february">Febrero</string>
+    <string name="march">Marzo</string>
+    <string name="april">Abril</string>
+    <string name="may">Mayo</string>
+    <string name="june">Junio</string>
+    <string name="july">Julio</string>
+    <string name="august">Agosto</string>
+    <string name="september">Septiembre</string>
+    <string name="october">Octubre</string>
+    <string name="november">Noviembre</string>
+    <string name="december">Diciembre</string>
+    <string name="select_day">Seleccionar día</string>
+    <string name="userNameHint">Introduzca su correo electrónico</string>
+    <string name="userPassHint">Introduzca su contraseña</string>
+    <string name="sitckersLicense">
+        <a href="https://www.flaticon.es/stickers-gratis/gimnasio">
+            Gimnasio stickers creadas por Stickers - Flaticon
+        </a>
+    </string>
+
+</resources>
