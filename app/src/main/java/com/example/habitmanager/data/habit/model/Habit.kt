@@ -11,36 +11,23 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.example.habitmanager.data.calendar.model.CalendarItem
 import com.example.habitmanager.data.category.model.Category
+import com.google.firebase.database.IgnoreExtraProperties
 import java.util.Calendar
 import java.util.Objects
 
-@Entity(
-    foreignKeys = [ForeignKey(
-        entity = Category::class,
-        parentColumns = ["id"],
-        childColumns = ["category_id"],
-        onDelete = 5)]
-)
-class Habit : Parcelable, Comparable<Habit?> {
-    @PrimaryKey
-    @ColumnInfo(name = "habitName")
-    var name: String? = null
-    var description: String? = null
-    var startDate: Calendar? = null
-    var startDateString: String? = null
-    var endDate: Calendar? = null
-    var endDateString: String? = null
-    @ColumnInfo(name = "category_id")
-    var categoryId = 0
-    var currentDaysCount: Int
-    var completedDaysCount: Int
-    var isFinished = false
-
-
-    constructor() {
-        currentDaysCount = 0
-        completedDaysCount = 0
-    }
+@IgnoreExtraProperties
+data class Habit(
+    var name: String? = null,
+    var description: String? = null,
+    var startDate: Long? = null,
+    var startDateString: String? = null,
+    var endDate: Long? = null,
+    var endDateString: String? = null,
+    var categoryId: Int? = 0,
+    var currentDaysCount: Int = 0,
+    var completedDaysCount: Int = 0,
+    var isFinished: Boolean = false
+) : Parcelable, Comparable<Habit?> {
 
     constructor(
         name: String,
@@ -48,17 +35,17 @@ class Habit : Parcelable, Comparable<Habit?> {
         startDate: Calendar,
         endDate: Calendar?,
         categoryId: Int
-    ) {
+    ) : this() {
         this.name = name
         this.description = description
-        this.startDate = startDate
-        this.endDate = endDate
+        this.startDate = startDate.timeInMillis
+        this.endDate = endDate?.timeInMillis
         this.categoryId = categoryId
         currentDaysCount = 0
         completedDaysCount = 0
     }
 
-    constructor(habit: Habit) {
+    constructor(habit: Habit) : this() {
         name = habit.name
         description = habit.description
         startDate = habit.startDate
@@ -74,23 +61,11 @@ class Habit : Parcelable, Comparable<Habit?> {
         return Habit(this)
     }
 
-    protected constructor(`in`: Parcel) {
+    protected constructor(`in`: Parcel) : this() {
         name = `in`.readString()!!
         description = `in`.readString()
         currentDaysCount = `in`.readInt()
         completedDaysCount = `in`.readInt()
-    }
-
-    fun increaseCurrentDaysCount() {
-        currentDaysCount++
-    }
-
-    fun increaseCompletedDaysCount() {
-        completedDaysCount++
-    }
-
-    fun decreaseCompletedDaysCount() {
-        completedDaysCount--
     }
 
     override fun compareTo(other: Habit?): Int {
@@ -128,16 +103,15 @@ class Habit : Parcelable, Comparable<Habit?> {
     }
 
     fun hasTask(calendarItem: CalendarItem): Boolean {
-        Log.d("startDate", startDate!!.timeInMillis.toString())
-        Log.d(
-            "calendarObject",
-            java.lang.String.valueOf(calendarItem.calendar.getTimeInMillis())
-        )
-        Log.d(
-            "has task",
-            (startDate!!.timeInMillis <= calendarItem.calendar.getTimeInMillis()).toString()
-        )
-        return startDate!!.timeInMillis <= calendarItem.calendar.getTimeInMillis()
+        return if(endDate != null)
+                (startDate!! <= calendarItem.calendar) && ((calendarItem.calendar - endDate!!) < (1000 * 60 * 60 * 24))
+        else
+            (startDate!! <= calendarItem.calendar)
+    }
+
+    fun calculateDaysCount() {
+        val daysMillis = Calendar.getInstance().timeInMillis - startDate!!
+        currentDaysCount = (daysMillis / (1000 * 60 * 60 * 24)).toInt()
     }
 
     companion object CREATOR : Creator<Habit> {

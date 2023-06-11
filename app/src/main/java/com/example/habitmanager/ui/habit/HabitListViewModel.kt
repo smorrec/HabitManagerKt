@@ -20,7 +20,7 @@ class HabitListViewModel : ViewModel() {
         HabitManagerApplication.scope().launch {
             val list: ArrayList<Habit> = habitRepository.getList()
             if (list.isNotEmpty()) {
-                liveDataList.postValue(list!!)
+                liveDataList.postValue(list)
             }
         }
     }
@@ -38,7 +38,6 @@ class HabitListViewModel : ViewModel() {
     fun undo() {
         HabitManagerApplication.scope().launch {
             habitRepository.undo(deletedHabit.value)
-            habitEventRepository.undo(deletedHabit.value!!)
         }
 
     }

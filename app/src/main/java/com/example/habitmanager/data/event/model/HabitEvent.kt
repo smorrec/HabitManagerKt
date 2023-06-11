@@ -1,4 +1,4 @@
-package com.example.habitmanager.data.task.model
+package com.example.habitmanager.data.event.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
@@ -7,22 +7,13 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.example.habitmanager.data.calendar.model.CalendarItem
 import com.example.habitmanager.data.habit.model.Habit
+import com.google.firebase.database.Exclude
+import com.google.firebase.database.IgnoreExtraProperties
 import java.util.Calendar
-
-@Entity(
-    foreignKeys = [ForeignKey(
-        entity = Habit::class,
-        parentColumns = ["habitName"],
-        childColumns = ["habit_Name"],
-        onDelete = 5
-    )]
-)
+@IgnoreExtraProperties
 data class HabitEvent(
-    @PrimaryKey(autoGenerate = true)
     var idTask: Int? = null,
-    @ColumnInfo(name = "habit_Name")
     var habitName: String? = null,
-    @Embedded
     var calendar: CalendarItem? = null,
     var isCompleted: Boolean = false)
 {
@@ -31,15 +22,31 @@ data class HabitEvent(
         habitName = habit.name
         this.calendar = calendar
     }
+    @Exclude
+    fun isCurrentDay(): Boolean{
+        return calendar!!.equals(CalendarItem(Calendar.getInstance()))
+    }
 
-    val isCurrentDay: Boolean
-        get() = calendar!!.equals(CalendarItem(Calendar.getInstance()))
-
+    override fun equals(other: Any?): Boolean {
+        return if(other is HabitEvent){
+            habitName == other.habitName && calendar == other.calendar
+        }else {
+            false
+        }
+    }
     override fun toString(): String {
         return "HabitTask{" +
                 "habit=" + habitName +
                 ", calendar=" + calendar +
                 ", completed=" + isCompleted +
                 '}'
+    }
+
+    override fun hashCode(): Int {
+        var result = idTask ?: 0
+        result = 31 * result + (habitName?.hashCode() ?: 0)
+        result = 31 * result + (calendar?.hashCode() ?: 0)
+        result = 31 * result + isCompleted.hashCode()
+        return result
     }
 }

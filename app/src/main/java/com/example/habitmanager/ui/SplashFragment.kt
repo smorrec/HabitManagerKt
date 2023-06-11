@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import com.example.habitmanagerkt.R
 import com.example.habitmanagerkt.databinding.FragmentSplashBinding
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 class SplashFragment : Fragment() {
     private val WAIT_TIME = 2000
@@ -29,10 +31,18 @@ class SplashFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        Handler().postDelayed({
-            NavHostFragment.findNavController(this@SplashFragment)
-                .navigate(R.id.action_SplashFragment_to_loginFragment)
-        }, WAIT_TIME.toLong())
+        if(Firebase.auth.currentUser != null){
+            Handler().postDelayed({
+                NavHostFragment.findNavController(this@SplashFragment)
+                    .navigate(R.id.action_SplashFragment_to_MainFragment)
+            }, WAIT_TIME.toLong())
+        }else{
+            Handler().postDelayed({
+                NavHostFragment.findNavController(this@SplashFragment)
+                    .navigate(R.id.action_SplashFragment_to_firstScreenFragment)
+            }, WAIT_TIME.toLong())
+        }
+
     }
 
     override fun onResume() {

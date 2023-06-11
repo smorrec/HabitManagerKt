@@ -2,17 +2,33 @@ package com.example.habitmanager.data.calendar.model
 
 import com.example.habitmanager.HabitManagerApplication
 import com.example.habitmanagerkt.R
+import com.google.firebase.database.Exclude
 import java.util.Calendar
 import java.util.Objects
 
-data class CalendarItem(val calendar: Calendar) {
-    val day = calendar.get(Calendar.DATE)
-    val weekDay = setWeekDayName()
-    val month = setMonthName()
+data class CalendarItem(
+    var day: Int = 0,
+    var weekDay: String = "",
+    var month: String = "",
+    var fullName: String = "",
+    var calendar: Long = 0L
+    ) {
 
-    private fun setWeekDayName(): String{
+    constructor(calendar: Calendar) : this() {
+        this.day = calendar.get(Calendar.DATE)
+        this.weekDay = setWeekDayName(calendar)
+        this.month = setMonthName(calendar)
+        this.fullName = day.toString() + weekDay + month
+        this.calendar = calendar.timeInMillis
+    }
+    @Exclude
+    fun isCurrentDay(): Boolean{
+        return this == CalendarItem(Calendar.getInstance())
+    }
+
+    private fun setWeekDayName(calendar: Calendar): String {
         var name = 0
-        when (calendar.get(Calendar.DAY_OF_WEEK)){
+        when (calendar.get(Calendar.DAY_OF_WEEK)) {
             1 -> name = R.string.sunday
             2 -> name = R.string.monday
             3 -> name = R.string.tuesday
@@ -25,9 +41,9 @@ data class CalendarItem(val calendar: Calendar) {
             .resources.getString(name)
     }
 
-    private fun setMonthName(): String{
+    private fun setMonthName(calendar: Calendar): String {
         var name = 0
-        when (calendar.get(Calendar.MONTH)){
+        when (calendar.get(Calendar.MONTH)) {
             0 -> name = R.string.january
             1 -> name = R.string.february
             2 -> name = R.string.march
@@ -49,10 +65,10 @@ data class CalendarItem(val calendar: Calendar) {
         if (this === other) return true
         if (other == null || this.javaClass != other.javaClass) return false
         val that = other as CalendarItem
-        return day == that.day && weekDay.equals(that.weekDay) && month.equals(that.month)
+        return day == that.day && weekDay == that.weekDay && month == that.month
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(calendar)
+        return super.hashCode()
     }
 }

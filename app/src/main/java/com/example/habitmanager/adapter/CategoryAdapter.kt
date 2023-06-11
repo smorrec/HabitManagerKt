@@ -1,6 +1,7 @@
 package com.example.habitmanager.adapter
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,7 +34,7 @@ class CategoryAdapter(
         } else {
             viewHolder = view.tag as ViewHolder
         }
-        viewHolder.imageView!!.setImageResource(list[position].picture)
+        viewHolder.imageView!!.setImageResource(list[position].picture!!)
         viewHolder.textView!!.text = list[position].name
         return view!!
     }

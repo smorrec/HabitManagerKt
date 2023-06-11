@@ -1,40 +1,35 @@
 package com.example.habitmanager.ui.login
 
-import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.habitmanager.data.user.model.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+
 
 class LoginViewModel: ViewModel() {
-    val loginResult: MutableLiveData<LoginResult> = MutableLiveData()
+    private val _loginResult = MutableStateFlow(LoginResult.STARTED)
+    val loginResult = _loginResult.asStateFlow()
+
+    val _email = MutableStateFlow("qwerty@qwerty.com")
+    val email = _email.asStateFlow()
+
+    val _password = MutableStateFlow("qwerty")
+    val password = _password.asStateFlow()
+
     private var auth: FirebaseAuth = Firebase.auth
 
-    fun signUp(user: User){
-        auth.createUserWithEmailAndPassword(
-            user.email!!,
-            user.password!!)
-            .addOnCompleteListener {
-                if (it.isSuccessful) {
-                    loginResult.postValue(LoginResult.SUCCESS)
-                } else {
-                    loginResult.postValue(LoginResult.FAILURE)
-                }
-            }
-    }
-
-
-    fun login(user: User){
+    fun login(){
         auth.signInWithEmailAndPassword(
-            user.email!!,
-            user.password!!
+            email.value,
+            password.value
         ).addOnCompleteListener {
             if (it.isSuccessful) {
-                loginResult.postValue(LoginResult.SUCCESS)
+                _loginResult.update { LoginResult.SUCCESS }
             } else {
-                loginResult.postValue(LoginResult.FAILURE)
+                _loginResult.update { LoginResult.FAILURE }
             }
         }
     }

@@ -7,6 +7,13 @@ import androidx.room.Update
 import com.example.habitmanager.data.category.model.Category
 
 interface CategoryDao {
+    suspend fun insert(category: Category)
+    suspend fun update(category: Category)
+    suspend fun delete(category: Category)
+    suspend fun deleteAll()
+    suspend fun selectAll(): List<Category>
+    fun selectById(id: Int): Category?
+    /*
     @Insert
     suspend fun insert(category: Category): Long
 
@@ -24,4 +31,6 @@ interface CategoryDao {
 
     @Query("SELECT * FROM category WHERE id=:id")
     suspend fun selectById(id: Int): Category
+    */
+
 }

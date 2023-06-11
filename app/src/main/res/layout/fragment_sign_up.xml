@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.habitmanager.ui.signUp.SignUpViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/welcomeTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="56dp"
+            android:layout_marginEnd="32dp"
+            android:text="¡Hola de nuevo!"
+            android:textAlignment="center"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+            app:layout_constraintStart_toStartOf="@id/guidelineBegin"
+            app:layout_constraintTop_toTopOf="@id/guidelineTop" />
+
+        <TextView
+            android:id="@+id/welcomeMSG"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="56dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="56dp"
+            android:text="Bienvenido de nuevo, te echábamos de menos"
+            android:textAlignment="center"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+            app:layout_constraintStart_toStartOf="@id/guidelineBegin"
+            app:layout_constraintTop_toBottomOf="@id/welcomeTitle" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/emailLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+            app:layout_constraintStart_toStartOf="@id/guidelineBegin"
+            app:layout_constraintTop_toBottomOf="@id/welcomeMSG">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/emailEdit"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/userNameHint"
+                android:text="@={viewModel._email}" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/displayNameLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+            app:layout_constraintStart_toStartOf="@id/guidelineBegin"
+            app:layout_constraintTop_toBottomOf="@id/emailLayout">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/displayNameEdit"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/userNameHint"
+                android:text="@={viewModel._displayName}" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/passLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="@id/displayNameLayout"
+            app:layout_constraintStart_toStartOf="@id/displayNameLayout"
+            app:layout_constraintTop_toBottomOf="@id/displayNameLayout"
+            app:passwordToggleEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/passEdit"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/userPassHint"
+                android:inputType="textPassword"
+                android:text="@={viewModel._password}" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/pass2Layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="@id/passLayout"
+            app:layout_constraintStart_toStartOf="@id/passLayout"
+            app:layout_constraintTop_toBottomOf="@id/passLayout"
+            app:passwordToggleEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/pass2Edit"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/userPass2Hint"
+                android:inputType="textPassword"
+                android:text="@={viewModel._repeatedPass}" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/btnSignUp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Registrarse"
+            app:layout_constraintStart_toStartOf="@id/guidelineBegin"
+            app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+            app:layout_constraintTop_toBottomOf="@id/pass2Layout"
+            android:onClick="@{() -> viewModel.signUp()}"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineBegin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="48dp" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="48dp" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineTop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="48dp" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineBottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_end="48dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

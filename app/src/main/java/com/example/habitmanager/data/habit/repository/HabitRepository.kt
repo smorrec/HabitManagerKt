@@ -1,7 +1,10 @@
 package com.example.habitmanager.data.habit.repository
 
+import com.example.habitmanager.HabitManagerApplication
+import com.example.habitmanager.data.event.model.HabitEvent
 import com.example.habitmanager.data.habit.dao.HabitDao
 import com.example.habitmanager.data.habit.model.Habit
+import kotlinx.coroutines.launch
 import java.lang.Exception
 
 class HabitRepository(
@@ -9,36 +12,44 @@ class HabitRepository(
 ) {
 
     suspend fun getList(): ArrayList<Habit> {
-             return habitDao.selectAll() as ArrayList<Habit>
+        return habitDao.selectAll() as ArrayList<Habit>
     }
 
-    suspend fun addHabit(habit: Habit, category: Int): Boolean {
-        return try{
+    fun addHabit(habit: Habit, category: Int): Boolean {
             habit.categoryId = category
-            habitDao.insert(habit) > 0
-        }catch (e: Exception){
-            false
-        }
+            return habitDao.insert(habit)
     }
 
-    suspend fun editHabit(habit: Habit, category: Int): Boolean {
+    fun editHabit(habit: Habit, category: Int): Boolean {
         return try {
             habit.categoryId = category
-            habitDao.update(habit)> 0
+            habitDao.update(habit)
         } catch (e: Exception) {
             false
         }
     }
 
-    suspend fun deleteHabit(habit: Habit?) {
+    fun deleteHabit(habit: Habit?) {
         habitDao.delete(habit!!)
     }
 
-    suspend fun undo(habit: Habit?) {
+    fun undo(habit: Habit?) {
         habitDao.insert(habit!!)
     }
 
-    suspend fun selectByName(name: String?): Habit {
+    suspend fun selectByName(name: String?): Habit? {
         return habitDao.selectByName(name!!)
+    }
+
+    fun modifiedCompletedDays(event: HabitEvent) {
+        HabitManagerApplication.scope().launch {
+            val habit = selectByName(event.habitName)!!
+            if(event.isCompleted)
+                habit.completedDaysCount++
+            else
+                habit.completedDaysCount--
+
+            editHabit(habit, habit.categoryId!!)
+        }
     }
 }

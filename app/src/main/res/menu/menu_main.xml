@@ -47,6 +47,12 @@
                 app:showAsAction="always"
                 android:icon="@drawable/ic_info"
                 />
+            <item
+                android:id="@+id/action_logOut"
+                android:title="@string/action_LogOut"
+                app:showAsAction="always"
+                android:icon="@drawable/ic_logout"
+                />
         </menu>
     </item>
 </menu>

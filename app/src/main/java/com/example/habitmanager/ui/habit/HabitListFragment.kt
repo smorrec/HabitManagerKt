@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.habitmanager.HabitManagerApplication
 import com.example.habitmanager.adapter.HabitAdapter
+import com.example.habitmanager.data.event.repository.HabitEventRepository
 import com.example.habitmanager.data.habit.model.Habit
 import com.example.habitmanager.preferencies.ListPreferencies
 import com.example.habitmanagerkt.R
@@ -39,11 +40,12 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import org.koin.java.KoinJavaComponent.get
 
 class HabitListFragment : Fragment(), HabitAdapter.OnItemClickListener {
     private var binding: FragmentHabitListBinding? = null
     private var viewModel: HabitListViewModel? = null
-    private var adapter: HabitAdapter? = null
+    var adapter: HabitAdapter? = null
     val TAG = "habitList"
     val BOTTOM_SHEET_TAG = "bottomSheet"
     private var selectedHabit = -1
@@ -104,7 +106,7 @@ class HabitListFragment : Fragment(), HabitAdapter.OnItemClickListener {
                 sortList()
             }
         }
-        viewModel!!.deletedHabit.observe(viewLifecycleOwner, Observer<Habit> { habit: Habit ->
+        viewModel!!.deletedHabit.observe(viewLifecycleOwner) { habit: Habit ->
             if (viewModel!!.isUndoEnabled) {
                 Snackbar.make(
                     requireView(),
@@ -118,7 +120,7 @@ class HabitListFragment : Fragment(), HabitAdapter.OnItemClickListener {
                     .show()
                 viewModel!!.isUndoEnabled = false
             }
-        })
+        }
         viewModel!!.getList()
     }
 
@@ -130,12 +132,12 @@ class HabitListFragment : Fragment(), HabitAdapter.OnItemClickListener {
         }
     }
 
-    private fun habitManagerFragment(bundle: Bundle?) {
+    fun habitManagerFragment(bundle: Bundle?) {
         NavHostFragment.findNavController(this)
             .navigate(R.id.action_habitListFragment_to_habitManagerFragment, bundle)
     }
 
-    protected fun deleteHabit() {
+    fun deleteHabit() {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(R.string.tittleDeleteHabit))
             .setMessage(
@@ -198,12 +200,12 @@ class HabitListFragment : Fragment(), HabitAdapter.OnItemClickListener {
             }
         }
 
-    private fun viewHabit() {
+    fun viewHabit() {
         NavHostFragment.findNavController(this)
             .navigate(R.id.action_habitListFragment_to_habitViewFragment, setBundle())
     }
 
-    private fun setBundle(): Bundle {
+    fun setBundle(): Bundle {
         val bundle = Bundle()
         val habit: Habit = adapter!!.getItem(selectedHabit)
         bundle.putParcelable(Habit.KEY, habit)
@@ -211,9 +213,10 @@ class HabitListFragment : Fragment(), HabitAdapter.OnItemClickListener {
     }
 
     override fun onItemClick(view: View?, position: Int) {
-        if (requireView().isSelected) {
-            val modalBottomSheet = ModalBottomSheet(this)
+        if (!requireView().isSelected) {
+            val modalBottomSheet = HabitListBottomSheet(this)
             modalBottomSheet.show(requireActivity().supportFragmentManager, BOTTOM_SHEET_TAG)
+
         }
         selectedHabit = position
     }
@@ -221,51 +224,5 @@ class HabitListFragment : Fragment(), HabitAdapter.OnItemClickListener {
     override fun onResume() {
         super.onResume()
         (activity as AppCompatActivity?)!!.supportActionBar!!.show()
-    }
-
-    inner class ModalBottomSheet(private val habitListFragment: HabitListFragment) :
-        BottomSheetDialogFragment() {
-        private var binding: ModalBottomSheetBinding? = null
-
-        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-            val dialog: BottomSheetDialog =
-                super.onCreateDialog(savedInstanceState) as BottomSheetDialog
-            dialog.setOnShowListener { dialog1: DialogInterface? ->
-                val bottomSheet: ConstraintLayout = binding!!.standardBottomSheet
-                BottomSheetBehavior.from<ConstraintLayout>(bottomSheet)
-                    .setState(BottomSheetBehavior.STATE_EXPANDED)
-            }
-            return dialog
-        }
-
-        override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-        ): View {
-            binding = ModalBottomSheetBinding.inflate(inflater, container, false)
-            binding!!.dragHandle.setOnClickListener { view: View? -> dismiss() }
-            binding!!.edit.setOnClickListener { view: View? ->
-                habitListFragment.habitManagerFragment(habitListFragment.setBundle())
-                dismiss()
-            }
-            binding!!.delete.setOnClickListener { view: View? ->
-                habitListFragment.deleteHabit()
-                dismiss()
-            }
-            binding!!.complete.setOnClickListener { view: View? -> dismiss() }
-            binding!!.info.setOnClickListener { view: View? ->
-                habitListFragment.viewHabit()
-                dismiss()
-            }
-            binding!!.statics.setOnClickListener { view: View? -> dismiss() }
-            return binding!!.root
-        }
-
-        override fun onDismiss(dialog: DialogInterface) {
-            super.onDismiss(dialog)
-            adapter!!.selectedPosition = -1
-            adapter!!.notifyDataSetChanged()
-        }
     }
 }

@@ -12,7 +12,7 @@ class CategoryRepository (
     ): BaseRepositpory(){
 
     init{
-        initialize()
+        //initialize()
     }
 
     private fun initialize(){
@@ -25,6 +25,8 @@ class CategoryRepository (
         HabitManagerApplication.scope().launch {
             categoryDao.insert(Category(3, "Idiomas", R.drawable.ic_language))
         }
+
+
     }
 
     suspend fun getList(): ArrayList<Category>{
@@ -32,17 +34,11 @@ class CategoryRepository (
     }
 
     fun getPicture(id: Int): Int{
-        var picture = 0
-        HabitManagerApplication.scope().launch{
-            picture = repositoryAsyncCall {
-                categoryDao.selectById(id).picture
-            }.await()
-        }
-        return picture
+        return categoryDao.selectById(id)!!.picture!!
     }
 
 
     suspend fun getName(id: Int): String{
-        return categoryDao.selectById(id).name
+        return categoryDao.selectById(id)!!.name!!
     }
 }

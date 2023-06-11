@@ -11,6 +11,7 @@ import com.example.habitmanager.data.habit.comparator.HabitComparatorByCategory
 import com.example.habitmanager.data.habit.model.Habit
 import com.example.habitmanagerkt.R
 import com.example.habitmanagerkt.databinding.ItemHabitBinding
+import com.google.firebase.auth.FirebaseAuth
 import org.koin.java.KoinJavaComponent.get
 import java.util.Collections
 
@@ -58,7 +59,7 @@ class HabitAdapter(
         holder.binding.textView.text = list[position].name
         holder.binding.avatarImageView2.setImageResource(
             categoryRepository.getPicture(
-                list[position].categoryId
+                list[position].categoryId!!
             )
 
         )
@@ -156,7 +157,7 @@ class HabitAdapter(
         }
     }
 
-    interface OnItemClickListener {
+    fun interface OnItemClickListener {
         fun onItemClick(view: View?, position: Int)
     }
 

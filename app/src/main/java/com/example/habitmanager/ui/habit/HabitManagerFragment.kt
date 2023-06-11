@@ -66,12 +66,12 @@ class HabitManagerFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding!!.txtStartDatePicker.setOnClickListener { startDatePicker: View? ->
+        binding!!.txtStartDatePicker.setOnClickListener {
             showDatePickerDialog(
                 binding!!.txtStartDatePicker
             )
         }
-        binding!!.txtEndDatePicker.setOnClickListener { endDatePicker: View? ->
+        binding!!.txtEndDatePicker.setOnClickListener {
             showDatePickerDialog(
                 binding!!.txtEndDatePicker
             )
@@ -79,7 +79,7 @@ class HabitManagerFragment : BaseFragment() {
         binding!!.fab.setOnClickListener { _: View? ->
             viewModel!!.addHabit(
                 binding!!.habit!!,
-                (binding!!.CategorySpinner.selectedItem as Category).id
+                (binding!!.CategorySpinner.selectedItem as Category).id!!
             )
         }
         binding!!.txtHabitName.addTextChangedListener(HabitTextWatcher(binding!!.txtHabitName))
@@ -101,8 +101,8 @@ class HabitManagerFragment : BaseFragment() {
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = selection!!
             when (editText.id) {
-                R.id.txtStartDatePicker -> binding!!.habit!!.startDate = calendar
-                R.id.txtEndDatePicker -> binding!!.habit!!.endDate = calendar
+                R.id.txtStartDatePicker -> binding!!.habit!!.startDate = calendar.timeInMillis
+                R.id.txtEndDatePicker -> binding!!.habit!!.endDate = calendar.timeInMillis
             }
         }
         picker.show(requireActivity().supportFragmentManager, "datePicker")
@@ -188,7 +188,7 @@ class HabitManagerFragment : BaseFragment() {
         binding!!.fab.setOnClickListener { _: View? ->
             viewModel!!.editHabit(
                 binding!!.habit!!,
-                (binding!!.CategorySpinner.selectedItem as Category).id
+                (binding!!.CategorySpinner.selectedItem as Category).id!!
             )
         }
     }

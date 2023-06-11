@@ -2,13 +2,13 @@ package com.example.habitmanager.data.category.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.firebase.database.IgnoreExtraProperties
 import java.util.Objects
-@Entity
+@IgnoreExtraProperties
 data class Category(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int,
-    val name: String,
-    val picture: Int
+    val id: Int? = null,
+    val name: String? = null,
+    val picture: Int? = null
 ): Comparable<Category> {
 
     override fun equals(other: Any?): Boolean {
@@ -22,8 +22,12 @@ data class Category(
         return Objects.hash(name)
     }
 
+    override fun toString(): String {
+        return name!!
+    }
+
     override fun compareTo(other: Category): Int {
-        if(id < other.id) return -1
+        if(id!! < other.id!!) return -1
         else if(id > other.id) return 1
         return 0
     }

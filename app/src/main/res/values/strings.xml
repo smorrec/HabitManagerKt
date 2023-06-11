@@ -124,5 +124,12 @@
             Gimnasio stickers creadas por Stickers - Flaticon
         </a>
     </string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="userPass2Hint">Confirme su contraseña</string>
+    <string name="emailError">El email no puede estar vacío\n</string>
+    <string name="passwordError">La contraseña no puede estar vacía</string>
+    <string name="diferentPasswordError">Las contraseñas no coinciden\n</string>
+    <string name="action_LogOut">Cerrar Sesión</string>
 
 </resources>

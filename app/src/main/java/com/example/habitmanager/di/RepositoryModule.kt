@@ -8,9 +8,9 @@ import com.example.habitmanager.data.user.repository.UserRepository
 import org.koin.dsl.module
 
 val repositoryModule = module {
-    single { CalendarRepository() }
     single { CategoryRepository(get()) }
+    single { CalendarRepository() }
     single { HabitRepository(get()) }
     single { HabitEventRepository(get()) }
-    single { UserRepository() }
+    single { UserRepository(get()) }
 }

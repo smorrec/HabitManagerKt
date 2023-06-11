@@ -1,14 +1,15 @@
 package com.example.habitmanager.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.habitmanager.HabitManagerApplication
 import com.example.habitmanager.data.calendar.model.CalendarItem
 import com.example.habitmanager.data.calendar.repository.CalendarRepository
+import com.example.habitmanager.data.user.model.User
+import com.example.habitmanager.data.user.repository.UserRepository
 import com.example.habitmanagerkt.databinding.CalendarItemBinding
-import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.get
 import java.util.Calendar
 
@@ -16,15 +17,13 @@ class CalendarAdapter(
     listener: OnItemClickListener
 ) : RecyclerView.Adapter<CalendarAdapter.ViewHolder?>() {
     private val calendarRepository: CalendarRepository = get(CalendarRepository::class.java)
-    var selectedPosition = -1
+    var selectedPosition = 0
     private val listener: OnItemClickListener
     private val list: ArrayList<CalendarItem> = ArrayList()
 
     init {
         this.listener = listener
-        HabitManagerApplication.scope().launch {
-            list.addAll(calendarRepository.getList())
-        }
+        list.addAll(calendarRepository.getList())
     }
 
     fun getItem(position: Int): CalendarItem {
@@ -49,7 +48,7 @@ class CalendarAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.binding.weekDayName.text = list[position].weekDay
-        holder.binding.weekDatValue.text = (list[position].day).toString()
+        holder.binding.weekDatValue.text = list[position].day.toString()
         holder.binding.root.isSelected = position == selectedPosition
     }
 

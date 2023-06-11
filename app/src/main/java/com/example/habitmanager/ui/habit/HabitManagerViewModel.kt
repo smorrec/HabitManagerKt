@@ -42,7 +42,7 @@ class HabitManagerViewModel : ViewModel() {
             viewModelScope.launch {
                 if (habitRepository.addHabit(habit, category)) {
                     resultMutableLiveData.setValue(HabitManagerResult.SUCCESS)
-                    habitEventRepository.addEvent(habit)
+                    //habitEventRepository.addEvent(habit)
                 } else {
                     resultMutableLiveData.setValue(HabitManagerResult.FAILURE)
                 }

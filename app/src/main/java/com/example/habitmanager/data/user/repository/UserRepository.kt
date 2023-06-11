@@ -1,49 +1,98 @@
 package com.example.habitmanager.data.user.repository
 
+import android.net.Uri
+import com.example.habitmanager.HabitManagerApplication
+import com.example.habitmanager.data.user.dao.UserDao
 import com.example.habitmanager.data.user.model.User
-import com.example.habitmanagerkt.R
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.userProfileChangeRequest
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import java.io.File
 
-class UserRepository(
-    var list: ArrayList<User>? = ArrayList()
-){
-
-    init {
-        initialize()
+class UserRepository(private val userDao: UserDao) {
+    private var user: User = User()
+    private val _userLogged = MutableStateFlow(false)
+    val userLogged = _userLogged.asStateFlow()
+    init{
+        FirebaseAuth.getInstance().currentUser?.let{
+            setFirebaseUser(it)
+        }
     }
 
-    fun addUser(user: User) {
-        list!!.add(user)
+    fun getUser(): User {
+        return user
     }
 
-    fun login(email: String?, password: String?): Boolean {
-        val user = User(email, password)
-        return list!!.contains(user)
-    }
+    fun prepareUser(name:String){
+        setFirebaseUser(FirebaseAuth.getInstance().currentUser!!)
 
-    private fun initialize() {
-        list = ArrayList()
-        list!!.add(User("sergio@sergio.com", "sergio", "Sergio", "Morales", R.drawable.profile))
-        list!!.add(User("aaaa@aaaaa.com", "A+a12345678", "aaaaaaaaaaaa", "aaaaaaaaaaaa", 1))
-        list!!.add(User("bbbb@bbbbb.com", "bbbbbbbbbbbb", "bbbbbbbbbbbb", "bbbbbbbbbbbb", 2))
-        list!!.add(User("cccc@ccccc.com", "cccccccccccc", "cccccccccccc", "cccccccccccc", 3))
-        list!!.add(User("dddd@ddddd.com", "dddddddddddd", "dddddddddddd", "dddddddddddd", 4))
-        list!!.add(User("eeee@eeeee.com", "eeeeeeeeeeee", "eeeeeeeeeeee", "eeeeeeeeeeee", 5))
-        list!!.add(User("ffff@fffff.com", "ffffffffffff", "ffffffffffff", "ffffffffffff", 6))
-        list!!.add(User("gggg@ggggg.com", "gggggggggggg", "gggggggggggg", "gggggggggggg", 7))
-        list!!.add(User("hhhh@hhhhh.com", "hhhhhhhhhhhh", "hhhhhhhhhhhh", "hhhhhhhhhhhh", 8))
-        list!!.add(User("iiii@iiiii.com", "iiiiiiiiiiii", "iiiiiiiiiiii", "iiiiiiiiiiii", 9))
-        list!!.add(User("jjjj@jjjjj.com", "jjjjjjjjjjjj", "jjjjjjjjjjjj", "jjjjjjjjjjjj", 10))
-        list!!.add(User("kkkk@kkkkk.com", "kkkkkkkkkkkk", "kkkkkkkkkkkk", "kkkkkkkkkkkk", 11))
-        list!!.add(User("llll@lllll.com", "llllllllllll", "llllllllllll", "llllllllllll", 12))
-        list!!.add(User("mmmm@mmmmm.com", "mmmmmmmmmmmm", "mmmmmmmmmmmm", "mmmmmmmmmmmm", 13))
-    }
+        val pis = HabitManagerApplication.applicationContext().assets.open("usuario.png")
+        val picture: File = createTempFile()
 
-    fun getUser(email: String): User? {
-        for (user in list!!) {
-            if (user.email == email) {
-                return user
+        pis.use { input ->
+            picture.outputStream().use { output ->
+                input.copyTo(output)
             }
         }
-        return null
+        user.firebaseUser!!.updateProfile(
+            userProfileChangeRequest {
+                displayName = name
+                photoUri = Uri.fromFile(picture)
+        }).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                _userLogged.update { true }
+            }
+        }
+
+    }
+
+    fun setFirebaseUser(firebaseUser: FirebaseUser){
+        user.firebaseUser = firebaseUser
+        _userLogged.update {
+            true
+        }
+    }
+
+    fun getDisplayName(): CharSequence? {
+        return user.firebaseUser!!.displayName
+    }
+
+    fun getEmail(): CharSequence? {
+        return user.firebaseUser!!.email
+    }
+
+    fun getProfilePicture(): Uri? {
+        return  user.firebaseUser!!.photoUrl
+    }
+
+    fun updatePicture(uri: Uri) {
+        user.firebaseUser!!.updateProfile(
+            userProfileChangeRequest {
+                photoUri = uri
+            })
+    }
+
+    fun logOut() {
+        user.firebaseUser = null
+        _userLogged.update { false }
+    }
+
+    fun updatePassword(newValue: String) {
+        user.firebaseUser!!.updatePassword(newValue)
+    }
+
+    fun updateEmail(newValue: String) {
+        user.firebaseUser!!.updateEmail(newValue).addOnCompleteListener {
+            _userLogged.update { true }
+        }
+    }
+
+    fun consumeFlow() {
+        _userLogged.update {
+            false
+        }
     }
 }

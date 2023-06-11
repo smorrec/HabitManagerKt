@@ -1,27 +1,20 @@
 package com.example.habitmanager.data.habit.dao
 
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
 import com.example.habitmanager.data.habit.model.Habit
 
 interface HabitDao {
-    @Insert
-    suspend fun insert(habit: Habit): Long
+    fun prepareDao()
 
-    @Update
-    suspend fun update(habit: Habit): Int
+    fun insert(habit: Habit): Boolean
 
-    @Delete
-    suspend fun delete(habit: Habit)
+    fun update(habit: Habit): Boolean
 
-    @Query("DELETE FROM category")
-    suspend fun deleteAll()
+    fun delete(habit: Habit)
 
-    @Query("SELECT * FROM habit ORDER BY habitName ASC")
+    fun deleteAll()
+
     suspend fun selectAll(): List<Habit>
 
-    @Query("SELECT * FROM habit WHERE habitName=:name")
-    suspend fun selectByName(name: String): Habit
+    suspend fun selectByName(name: String): Habit?
+
 }

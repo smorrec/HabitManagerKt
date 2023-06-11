@@ -1,32 +1,23 @@
 package com.example.habitmanager.data.event.dao
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
-import com.example.habitmanager.data.task.model.HabitEvent
+import com.example.habitmanager.data.calendar.model.CalendarItem
+import com.example.habitmanager.data.event.model.HabitEvent
+import com.example.habitmanager.data.habit.model.Habit
 
-@Dao
 interface HabitEventDao {
-    @Insert
-    suspend fun insert(habitEvent: HabitEvent?): Long
+    fun prepareDao()
 
-    @Update
-    suspend fun update(habitEvent: HabitEvent?)
+    fun insert(habitEvent: HabitEvent)
 
-    @Delete
-    suspend fun delete(habitEvent: HabitEvent?)
+    suspend fun getEvent(caledarItem: CalendarItem, habit: Habit): HabitEvent
 
-    @Query("DELETE FROM habitevent")
-    suspend fun deleteAll()
+    fun update(habitEvent: HabitEvent)
 
-    @Query("DELETE FROM habitevent WHERE habit_Name=:habitname")
-    suspend fun deleteWhereHabit(habitname: String?)
+    fun delete(habitEvent: HabitEvent)
 
-    @Query("SELECT * FROM habitevent ORDER BY idTask ASC")
-    suspend fun selectAll(): List<HabitEvent?>?
+    fun deleteAll()
 
-    @Query("SELECT * FROM habitevent WHERE idTask=:id")
-    suspend fun selectById(id: Int): HabitEvent?
+    fun deleteWhereHabit(habitname: String)
+
+    fun selectAll(): List<HabitEvent?>?
 }

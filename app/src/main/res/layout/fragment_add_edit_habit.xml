@@ -91,7 +91,8 @@
                 android:layout_height="match_parent"
                 android:clickable="true"
                 android:focusable="false"
-                android:hint="@string/EndDatePicker"/>
+                android:hint="@string/EndDatePicker"
+                android:text="@={habit.endDateString}"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -102,7 +103,8 @@
             android:layout_gravity="center"
             android:layout_marginTop="32dp"
             android:minHeight="48dp"
-            android:selectedItemPosition="@={habit.categoryId -1}"
+            android:spinnerMode="dialog"
+            android:selectedItemPosition="@={habit.categoryId-1}"
             app:layout_constraintEnd_toStartOf="@+id/guideEnd"
             app:layout_constraintStart_toEndOf="@+id/guideStart"
             app:layout_constraintTop_toBottomOf="@+id/txtEndDateLayout" />

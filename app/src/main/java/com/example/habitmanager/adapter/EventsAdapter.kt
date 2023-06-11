@@ -1,5 +1,6 @@
 package com.example.habitmanager.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,52 +9,41 @@ import com.example.habitmanager.data.calendar.model.CalendarItem
 import com.example.habitmanager.data.category.repository.CategoryRepository
 import com.example.habitmanager.data.event.repository.HabitEventRepository
 import com.example.habitmanager.data.habit.repository.HabitRepository
-import com.example.habitmanager.data.task.model.HabitEvent
+import com.example.habitmanager.data.event.model.HabitEvent
 import com.example.habitmanagerkt.databinding.ItemTaskBinding
 import com.google.android.material.checkbox.MaterialCheckBox
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.runBlocking
 import org.koin.java.KoinJavaComponent.get
 import java.util.Calendar
 
 class EventsAdapter : RecyclerView.Adapter<EventsAdapter.ViewHolder?>() {
-    private val list: ArrayList<HabitEvent?>
     private val listToShow: ArrayList<HabitEvent> = ArrayList()
     private var selectedCalendar: CalendarItem
     private val habitEventRepository: HabitEventRepository = get(HabitEventRepository::class.java)
     private val categoryRepository: CategoryRepository = get(CategoryRepository::class.java)
     private val habitRepository: HabitRepository = get(HabitRepository::class.java)
+    private val auth = FirebaseAuth.getInstance()
 
     init {
-        list = getRepositoryList()
         selectedCalendar = CalendarItem(Calendar.getInstance())
-        fillList()
     }
 
-    private fun getRepositoryList(): ArrayList<HabitEvent?> {
-        val list = runBlocking {
-            habitEventRepository.getList()
-        }
-        return list
-    }
-
-    fun setSelectedCalendar(calendar: CalendarItem) {
+    suspend fun setSelectedCalendar(calendar: CalendarItem) {
         selectedCalendar = calendar
-        listToShow.clear()
         fillList()
-        notifyDataSetChanged()
+
     }
 
-    private fun fillList() {
-        for (habitEvent in list) {
-            if (habitEvent!!.calendar!! == selectedCalendar) {
-                listToShow.add(habitEvent)
-            }
-        }
+    private suspend fun fillList() {
+        listToShow.clear()
+        listToShow.addAll(habitEventRepository.getEvents(selectedCalendar, habitRepository.getList()))
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding =
-            ItemTaskBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false)
+            ItemTaskBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding.root)
     }
 
@@ -67,29 +57,33 @@ class EventsAdapter : RecyclerView.Adapter<EventsAdapter.ViewHolder?>() {
             runBlocking {
                 categoryRepository.getPicture(
                     habitRepository.selectByName(
-                        listToShow[position].habitName
-                    ).categoryId
+                        listToShow[position].habitName!!
+                    )!!.categoryId!!
                 )
             }
 
         )
-        holder.binding.textView.setText(listToShow[position].habitName)
+        holder.binding.textView.text = listToShow[position].habitName
         holder.binding.descriptionnBtn.isChecked = listToShow[position].isCompleted
-        holder.binding.descriptionnBtn.isEnabled = listToShow[position].isCurrentDay
+        holder.binding.descriptionnBtn.isEnabled = listToShow[position].isCurrentDay()
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val binding: ItemTaskBinding
         var event: HabitEvent? = null
-        val habitEventRepository: HabitEventRepository = get(HabitEventRepository::class.java)
+        private val habitEventRepository: HabitEventRepository = get(HabitEventRepository::class.java)
+        private val habitRepository: HabitRepository = get(HabitRepository::class.java)
 
         init {
             binding = ItemTaskBinding.bind(itemView)
             binding.descriptionnBtn.
-            addOnCheckedStateChangedListener { checkBox: MaterialCheckBox, state: Int ->
-                event!!.isCompleted = checkBox.isChecked
-                habitEventRepository.backgroundJob {
-                    habitEventRepository.update(event)
+            addOnCheckedStateChangedListener { checkBox: MaterialCheckBox, _: Int ->
+                if(event!!.isCurrentDay()) {
+                    val initialState = event!!.isCompleted
+                    event!!.isCompleted = checkBox.isChecked
+                    habitEventRepository.update(event!!)
+                    if (initialState != event!!.isCompleted)
+                        habitRepository.modifiedCompletedDays(event!!)
                 }
             }
         }
