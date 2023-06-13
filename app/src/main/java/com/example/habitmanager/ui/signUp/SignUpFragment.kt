@@ -1,5 +1,6 @@
 package com.example.habitmanager.ui.signUp
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.NavHostFragment
+import com.example.habitmanager.HabitManagerApplication
 import com.example.habitmanager.data.user.repository.UserRepository
 import com.example.habitmanager.utils.collectFlow
 import com.example.habitmanager.utils.hideKeyboard
@@ -29,6 +31,10 @@ class SignUpFragment : Fragment() {
     ): View {
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_sign_up, container, false)
         binding.viewModel = viewModel
+
+        val iconis = HabitManagerApplication.applicationContext().assets.open("appicon.png")
+        val iconDrawable = Drawable.createFromStream(iconis, null)
+        binding.icon.setImageDrawable(iconDrawable)
         return binding.root
     }
 

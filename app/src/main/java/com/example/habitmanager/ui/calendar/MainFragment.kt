@@ -8,6 +8,8 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.animation.Animation
+import android.view.animation.Animation.AnimationListener
 import android.widget.AdapterView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -43,7 +45,8 @@ class MainFragment : BaseFragment(), CalendarAdapter.OnItemClickListener {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         prepareDaos()
-
+        requireActivity().window.setFlags(
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
     }
 
     private fun prepareDaos() {
@@ -61,12 +64,15 @@ class MainFragment : BaseFragment(), CalendarAdapter.OnItemClickListener {
         binding = FragmentMainBinding.inflate(inflater)
         initRvCalendar()
         initRvTasks()
+
         requireActivity().findViewById<View>(R.id.bottom_navigation).visibility = View.VISIBLE
         (requireActivity().findViewById<View>(R.id.progressBar) as LinearProgressIndicator).show()
+
         lifecycleScope.launch {
             eventAdapter!!.setSelectedCalendar(calendarAdapter!!.getItem(0))
             (requireActivity().findViewById<View>(R.id.progressBar) as LinearProgressIndicator).hide()
             binding!!.taskList.startLayoutAnimation()
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         }
         return binding!!.root
     }
@@ -126,9 +132,9 @@ class MainFragment : BaseFragment(), CalendarAdapter.OnItemClickListener {
     override fun onClick(view: View?, position: Int) {
         val progressBar = (requireActivity().findViewById<View>(R.id.progressBar) as LinearProgressIndicator)
         progressBar.show()
-        requireActivity().window.setFlags(
-            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         lifecycleScope.launch {
+            requireActivity().window.setFlags(
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             eventAdapter!!.setSelectedCalendar(calendarAdapter!!.getItem(position))
             progressBar.hide()
             binding!!.taskList.startLayoutAnimation()

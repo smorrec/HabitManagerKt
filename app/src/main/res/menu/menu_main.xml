@@ -23,12 +23,12 @@
                 app:showAsAction="always"
                 android:icon="@drawable/ic_checklist"
                 />
-            <item
+            <!--<item
                 android:id="@+id/action_profile"
                 android:title="@string/action_Profile"
                 app:showAsAction="always"
                 android:icon="@drawable/ic_profile"
-                />
+                />-->
         </menu>
     </item>
     <item

@@ -29,6 +29,10 @@ class FirstScreenFragment : Fragment() {
         val ims = HabitManagerApplication.applicationContext().assets.open("deporte.png")
         val drawable = Drawable.createFromStream(ims, null)
         binding.IMG.setImageDrawable(drawable)
+
+        val iconis = HabitManagerApplication.applicationContext().assets.open("appicon.png")
+        val iconDrawable = Drawable.createFromStream(iconis, null)
+        binding.icon.setImageDrawable(iconDrawable)
         return binding.root
     }
 

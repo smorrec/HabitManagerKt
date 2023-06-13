@@ -20,8 +20,6 @@
     <string name="layoutCompletedDaysCount">Días completados : </string>
     <string name="backFAB">Volver</string>
     <string name="action_list">Hábitos</string>
-    <string name="calendarBack"><![CDATA[<-]]></string>
-    <string name="frontBack"><![CDATA[->]]></string>
     <string name="dayOfWeek">DíaDeLaSemana</string>
     <string name="monthYear">MesAño</string>
     <string name="addedHabit">Un nuevo hábito ha sido añadido</string>
@@ -131,5 +129,15 @@
     <string name="passwordError">La contraseña no puede estar vacía</string>
     <string name="diferentPasswordError">Las contraseñas no coinciden\n</string>
     <string name="action_LogOut">Cerrar Sesión</string>
+    <string name="firstScreenTitle">HabitManager</string>
+    <string name="firstScreenMSG">¡Comienza a llevar un seguimiento de tus hábitos!</string>
+    <string name="resetPass">Resetear contraseña</string>
+    <string name="passwordLengthError">La contraseña debe tener 6 dígitos o más</string>
+    <string name="createAccount">O crea una cuenta si no dispones de una</string>
+    <string name="displayNameHint">Introduzca su nombre de usuario</string>
+    <string name="signUpTitle">¡Bienvenido!</string>
+    <string name="signUpMsg">Ya solo quedan unos pasos más</string>
+    <string name="eventAvailable">¡Evento disponible!</string>
+    <string name="eventAvailableMsg">"Hoy hace un día fabuloso para %1$s"</string>
 
 </resources>

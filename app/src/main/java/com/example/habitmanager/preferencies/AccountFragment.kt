@@ -3,6 +3,7 @@ package com.example.habitmanager.preferencies
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.InputType
+import android.util.Log
 import android.widget.EditText
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
@@ -40,6 +41,7 @@ class AccountFragment : PreferenceFragmentCompat() {
         }
         edPassword.onPreferenceChangeListener =
             Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any? ->
+                Log.d("AAAAAAAAAAAAAA", "CALED")
                 userRepository.updatePassword(newValue as String)
                 true
             }
@@ -53,6 +55,7 @@ class AccountFragment : PreferenceFragmentCompat() {
         }
         edEmail.onPreferenceChangeListener =
             Preference.OnPreferenceChangeListener { preference: Preference?, newValue: Any? ->
+                Log.d("AAAAAAAAAAAAAA", "CALED" + newValue as String)
                 userRepository.updateEmail(newValue as String)
                 true
             }

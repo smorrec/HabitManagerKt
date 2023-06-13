@@ -52,4 +52,8 @@ class HabitRepository(
             editHabit(habit, habit.categoryId!!)
         }
     }
+
+    fun prepareDaos() {
+        habitDao.prepareDao()
+    }
 }

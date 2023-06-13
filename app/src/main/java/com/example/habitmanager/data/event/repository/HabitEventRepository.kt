@@ -1,5 +1,6 @@
 package com.example.habitmanager.data.event.repository
 
+import android.util.Log
 import com.example.habitmanager.data.base.BaseRepositpory
 import com.example.habitmanager.data.calendar.model.CalendarItem
 import com.example.habitmanager.data.calendar.repository.CalendarRepository
@@ -32,5 +33,18 @@ class HabitEventRepository(
                 }
             }
         return events
+    }
+
+    suspend fun getEvent(selectedCalendar: CalendarItem, habit: Habit): HabitEvent {
+        var event = HabitEvent()
+        if(habit.hasTask(selectedCalendar)) {
+            Log.d("AAAAAAAAAAAAAA", "SI TIENEEEEEEEEEEEEEEE")
+            event = habitEventDao.getEvent(selectedCalendar, habit)
+        }
+        return event
+    }
+
+    fun prepareDaos() {
+        habitEventDao.prepareDao()
     }
 }

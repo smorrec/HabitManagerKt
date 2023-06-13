@@ -26,11 +26,14 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.navigateUp
 import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
+import androidx.preference.Preference
+import androidx.preference.PreferenceFragmentCompat
 import com.example.habitmanager.data.event.repository.HabitEventRepository
 import com.example.habitmanager.data.habit.repository.HabitRepository
 import com.example.habitmanager.data.user.model.User
 import com.example.habitmanager.data.user.repository.UserRepository
 import com.example.habitmanager.preferencies.UserPrefManager
+import com.example.habitmanager.utils.collectFlow
 import com.example.habitmanagerkt.R
 import com.example.habitmanagerkt.databinding.ActivityMainBinding
 import com.google.firebase.auth.ktx.auth
@@ -135,20 +138,17 @@ class MainActivity : AppCompatActivity() {
 
     private fun setUpNavigationView() {
         val headerView = binding!!.navigationView.getHeaderView(0)
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
-                userRepository.userLogged.collect{
-                    if(it){
-                        (headerView.findViewById<View>(R.id.username) as TextView).text =
-                            userRepository.getDisplayName()
-                        (headerView.findViewById<View>(R.id.email) as TextView).text =
-                            userRepository.getEmail()
-                        (headerView.findViewById<View>(R.id.user_image) as ImageView).setImageURI(
-                            userRepository.getProfilePicture()
-                        )
-                    }
-                }
-                userRepository.consumeFlow()
+
+        collectFlow(userRepository.userLogged){
+            if(it){
+                updateHeader()
+            }
+        }
+
+        collectFlow(userRepository.userPrepared){
+            if(it){
+                updateHeader()
+                userRepository.consumeFlowPrepared()
             }
         }
 
@@ -182,11 +182,12 @@ class MainActivity : AppCompatActivity() {
                     ).navigate(R.id.MainFragment)
                     binding!!.bottomNavigation.selectedItemId = R.id.completedMenu
                 }
-
+                /*
                 R.id.action_profile -> findNavController(
                     this,
                     R.id.nav_host_fragment_content_main
                 ).navigate(R.id.MainFragment)
+                */
 
                 R.id.action_settings -> findNavController(
                     this,
@@ -204,6 +205,17 @@ class MainActivity : AppCompatActivity() {
             binding!!.drawer.closeDrawer(GravityCompat.START)
             true
         }
+    }
+
+    private fun updateHeader() {
+        val headerView = binding!!.navigationView.getHeaderView(0)
+        (headerView.findViewById<View>(R.id.username) as TextView).text =
+            userRepository.getDisplayName()
+        (headerView.findViewById<View>(R.id.email) as TextView).text =
+            userRepository.getEmail()
+        (headerView.findViewById<View>(R.id.user_image) as ImageView).setImageURI(
+            userRepository.getProfilePicture()
+        )
     }
 
     private fun logOut(){

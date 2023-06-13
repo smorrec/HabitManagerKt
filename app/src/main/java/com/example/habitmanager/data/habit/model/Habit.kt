@@ -13,6 +13,7 @@ import com.example.habitmanager.data.calendar.model.CalendarItem
 import com.example.habitmanager.data.category.model.Category
 import com.google.firebase.database.IgnoreExtraProperties
 import java.util.Calendar
+import java.util.Date
 import java.util.Objects
 
 @IgnoreExtraProperties
@@ -110,8 +111,25 @@ data class Habit(
     }
 
     fun calculateDaysCount() {
-        val daysMillis = Calendar.getInstance().timeInMillis - startDate!!
+
+        val startDateC = Calendar.getInstance()
+        startDateC.timeInMillis = startDate!!
+        startDateC.set(Calendar.HOUR_OF_DAY, 0)
+        startDateC.set(Calendar.MINUTE, 0)
+        startDateC.set(Calendar.SECOND, 0)
+
+        val today = Calendar.getInstance()
+        startDateC.set(Calendar.HOUR_OF_DAY, 0)
+        startDateC.set(Calendar.MINUTE, 0)
+        startDateC.set(Calendar.SECOND, 0)
+
+        val daysMillis = today.timeInMillis - startDateC.timeInMillis
         currentDaysCount = (daysMillis / (1000 * 60 * 60 * 24)).toInt()
+        if((daysMillis % (1000 * 60 * 60 * 24)) != 0L){
+            currentDaysCount++
+        }
+
+
     }
 
     companion object CREATOR : Creator<Habit> {

@@ -47,7 +47,7 @@ class HabitListBottomSheet(private val habitListFragment: HabitListFragment) :
             habitListFragment.viewHabit()
             dismiss()
         }
-        binding!!.statics.setOnClickListener { dismiss() }
+        //binding!!.statics.setOnClickListener { dismiss() }
         return binding!!.root
     }
 

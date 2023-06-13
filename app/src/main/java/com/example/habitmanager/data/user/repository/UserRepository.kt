@@ -1,12 +1,18 @@
 package com.example.habitmanager.data.user.repository
 
 import android.net.Uri
+import android.util.Log
+import android.widget.Toast
 import com.example.habitmanager.HabitManagerApplication
 import com.example.habitmanager.data.user.dao.UserDao
 import com.example.habitmanager.data.user.model.User
+import com.example.habitmanagerkt.R
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.auth.ktx.userProfileChangeRequest
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -16,6 +22,9 @@ class UserRepository(private val userDao: UserDao) {
     private var user: User = User()
     private val _userLogged = MutableStateFlow(false)
     val userLogged = _userLogged.asStateFlow()
+
+    private val _userPrepared = MutableStateFlow(false)
+    val userPrepared = _userPrepared.asStateFlow()
     init{
         FirebaseAuth.getInstance().currentUser?.let{
             setFirebaseUser(it)
@@ -43,7 +52,7 @@ class UserRepository(private val userDao: UserDao) {
                 photoUri = Uri.fromFile(picture)
         }).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                _userLogged.update { true }
+                _userPrepared.update { true }
             }
         }
 
@@ -57,15 +66,15 @@ class UserRepository(private val userDao: UserDao) {
     }
 
     fun getDisplayName(): CharSequence? {
-        return user.firebaseUser!!.displayName
+        return user.firebaseUser?.displayName
     }
 
     fun getEmail(): CharSequence? {
-        return user.firebaseUser!!.email
+        return user.firebaseUser?.email
     }
 
     fun getProfilePicture(): Uri? {
-        return  user.firebaseUser!!.photoUrl
+        return  user.firebaseUser?.photoUrl
     }
 
     fun updatePicture(uri: Uri) {
@@ -86,13 +95,25 @@ class UserRepository(private val userDao: UserDao) {
 
     fun updateEmail(newValue: String) {
         user.firebaseUser!!.updateEmail(newValue).addOnCompleteListener {
-            _userLogged.update { true }
+            Log.d("EEEEEEEEEEEEEEEEEEE", "e" + it.isSuccessful)
+            if(it.isSuccessful) {
+                Log.d("AAAAAAAA", user.firebaseUser!!.email.toString())
+                user.firebaseUser!!.reload()
+                _userPrepared.update { true }
+            }
         }
     }
 
-    fun consumeFlow() {
-        _userLogged.update {
-            false
-        }
+    fun consumeFlowPrepared() {
+        _userPrepared.update { false }
+    }
+
+    fun resetPass(email: String) {
+        Firebase.auth.sendPasswordResetEmail(email)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Toast.makeText(HabitManagerApplication.applicationContext(), "Email enviado", Toast.LENGTH_LONG).show()
+                }
+            }
     }
 }

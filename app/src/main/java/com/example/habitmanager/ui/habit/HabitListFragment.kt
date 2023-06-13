@@ -113,10 +113,10 @@ class HabitListFragment : Fragment(), HabitAdapter.OnItemClickListener {
                     getString(R.string.undoText) + habit.name,
                     Snackbar.LENGTH_SHORT
                 )
-                    .setAction(R.string.undo, View.OnClickListener { view: View? ->
+                    .setAction(R.string.undo) {
                         viewModel!!.undo()
                         adapter!!.undo(habit)
-                    })
+                    }
                     .show()
                 viewModel!!.isUndoEnabled = false
             }

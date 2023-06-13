@@ -27,6 +27,14 @@
 
     </com.google.android.material.card.MaterialCardView>
 
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        app:layout_constraintTop_toTopOf="@id/welcomeTitle"
+        app:layout_constraintBottom_toBottomOf="@id/welcomeTitle"
+        app:layout_constraintStart_toStartOf="@id/guidelineBegin"/>
+
     <TextView
         android:id="@+id/welcomeTitle"
         android:layout_width="0dp"
@@ -34,12 +42,12 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="56dp"
         android:layout_marginEnd="32dp"
-        android:text="¡Hola de nuevo!"
+        android:text="@string/firstScreenTitle"
         android:textAlignment="center"
         android:textSize="32sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
-        app:layout_constraintStart_toStartOf="@id/guidelineBegin"
+        app:layout_constraintStart_toEndOf="@id/guidelineBegin"
         app:layout_constraintTop_toBottomOf="@id/imgCardView" />
 
     <TextView
@@ -49,7 +57,7 @@
         android:layout_marginStart="56dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="56dp"
-        android:text="Bienvenido de nuevo, te echábamos de menos"
+        android:text="@string/firstScreenMSG"
         android:textAlignment="center"
         android:textSize="16sp"
         android:textStyle="bold"

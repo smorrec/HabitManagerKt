@@ -11,6 +11,28 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            app:layout_constraintTop_toTopOf="@id/appTitle"
+            app:layout_constraintBottom_toBottomOf="@id/appTitle"
+            app:layout_constraintStart_toStartOf="@id/guidelineBegin"/>
+
+        <TextView
+            android:id="@+id/appTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="56dp"
+            android:layout_marginEnd="32dp"
+            android:text="@string/firstScreenTitle"
+            android:textAlignment="center"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+            app:layout_constraintStart_toEndOf="@id/guidelineBegin"
+            app:layout_constraintTop_toTopOf="@id/guidelineTop"/>
 
         <TextView
             android:id="@+id/welcomeTitle"
@@ -25,7 +47,7 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
             app:layout_constraintStart_toStartOf="@id/guidelineBegin"
-            app:layout_constraintTop_toTopOf="@id/guidelineTop" />
+            app:layout_constraintTop_toBottomOf="@id/appTitle" />
 
         <TextView
             android:id="@+id/welcomeMSG"
@@ -65,6 +87,7 @@
             android:id="@+id/passLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             app:errorEnabled="true"
             app:layout_constraintEnd_toEndOf="@id/emailLayout"
             app:layout_constraintStart_toStartOf="@id/emailLayout"
@@ -81,6 +104,17 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <TextView
+            android:id="@+id/resetPass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:onClick="@{() -> viewModel.resetPass()}"
+            android:text="@string/resetPass"
+            android:textColor="@color/seed"
+            app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+            app:layout_constraintTop_toBottomOf="@id/passLayout" />
+
         <Button
             android:id="@+id/btnLogin"
             android:layout_width="0dp"
@@ -89,18 +123,18 @@
             android:text="Iniciar Sesión"
             app:layout_constraintStart_toStartOf="@id/guidelineBegin"
             app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
-            app:layout_constraintTop_toBottomOf="@id/passLayout" />
+            app:layout_constraintTop_toBottomOf="@id/resetPass" />
 
-        <Button
-            android:id="@+id/btnSignUp"
+        <TextView
+            android:id="@+id/signUp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:text="Registrarse"
-            app:layout_constraintEnd_toEndOf="@id/passLayout"
-            app:layout_constraintStart_toEndOf="@id/btnLogin"
-            app:layout_constraintTop_toBottomOf="@id/passLayout"
-            android:visibility="gone"/>
+            app:layout_constraintTop_toBottomOf="@id/btnLogin"
+            app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+            app:layout_constraintStart_toStartOf="@id/guidelineBegin"
+            app:layout_constraintBottom_toBottomOf="@id/guidelineBottom"
+            android:text="@string/createAccount"
+            android:textColor="@color/seed"/>
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guidelineBegin"
