@@ -14,31 +14,28 @@ import com.example.habitmanagerkt.databinding.ItemTaskBinding
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.runBlocking
+import org.koin.java.KoinJavaComponent
 import org.koin.java.KoinJavaComponent.get
 import java.util.Calendar
 
 class EventsAdapter : RecyclerView.Adapter<EventsAdapter.ViewHolder?>() {
+    private val categoryRepository: CategoryRepository =
+        get(CategoryRepository::class.java)
+    private val habitRepository: HabitRepository =
+        get(HabitRepository::class.java)
     private val listToShow: ArrayList<HabitEvent> = ArrayList()
     private var selectedCalendar: CalendarItem
-    private val habitEventRepository: HabitEventRepository = get(HabitEventRepository::class.java)
-    private val categoryRepository: CategoryRepository = get(CategoryRepository::class.java)
-    private val habitRepository: HabitRepository = get(HabitRepository::class.java)
-    private val auth = FirebaseAuth.getInstance()
 
     init {
         selectedCalendar = CalendarItem(Calendar.getInstance())
     }
 
-    suspend fun setSelectedCalendar(calendar: CalendarItem) {
+    fun setSelectedCalendar(calendar: CalendarItem, events: ArrayList<HabitEvent>) {
         selectedCalendar = calendar
-        fillList()
-
-    }
-
-    private suspend fun fillList() {
         listToShow.clear()
-        listToShow.addAll(habitEventRepository.getEvents(selectedCalendar, habitRepository.getList()))
+        listToShow.addAll(events)
         notifyDataSetChanged()
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

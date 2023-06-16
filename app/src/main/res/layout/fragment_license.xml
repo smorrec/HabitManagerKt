@@ -106,7 +106,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/contentMPA" />
+            app:layout_constraintTop_toBottomOf="@id/contentAbout" />
 
         <TextView
             android:id="@+id/textViewStickers"
@@ -115,11 +115,11 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:text="@string/MaterialAbout"
+            android:text="@string/StickerLicense"
             android:textSize="16sp"
             app:layout_constraintEnd_toStartOf="@id/licenseBtnAbout"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider" />
+            app:layout_constraintTop_toBottomOf="@id/divider2" />
 
         <ImageButton
             android:id="@+id/licenseBtnStickers"
@@ -127,9 +127,9 @@
             android:layout_height="48dp"
             android:src="@drawable/ic_expand"
             android:backgroundTint="@android:color/transparent"
-            app:layout_constraintBottom_toBottomOf="@+id/textViewAbout"
+            app:layout_constraintBottom_toBottomOf="@+id/textViewStickers"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textViewAbout"/>
+            app:layout_constraintTop_toTopOf="@+id/textViewStickers"/>
 
         <androidx.cardview.widget.CardView
             android:id="@+id/contentStickers"
@@ -147,7 +147,7 @@
                 android:id="@+id/contentTxtStickers"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/about_license" />
+                android:text="@string/sitckersLicense" />
         </androidx.cardview.widget.CardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 

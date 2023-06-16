@@ -1,19 +1,11 @@
 package com.example.habitmanager.data.habit.model
 
-import android.annotation.SuppressLint
 import android.os.Parcel
 import android.os.Parcelable
 import android.os.Parcelable.Creator
-import android.util.Log
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
 import com.example.habitmanager.data.calendar.model.CalendarItem
-import com.example.habitmanager.data.category.model.Category
 import com.google.firebase.database.IgnoreExtraProperties
 import java.util.Calendar
-import java.util.Date
 import java.util.Objects
 
 @IgnoreExtraProperties
@@ -111,25 +103,41 @@ data class Habit(
     }
 
     fun calculateDaysCount() {
-
         val startDateC = Calendar.getInstance()
         startDateC.timeInMillis = startDate!!
         startDateC.set(Calendar.HOUR_OF_DAY, 0)
         startDateC.set(Calendar.MINUTE, 0)
         startDateC.set(Calendar.SECOND, 0)
 
-        val today = Calendar.getInstance()
-        startDateC.set(Calendar.HOUR_OF_DAY, 0)
-        startDateC.set(Calendar.MINUTE, 0)
-        startDateC.set(Calendar.SECOND, 0)
+        val lastDay = Calendar.getInstance()
+        if(isFinished && endDate != null)
+            lastDay.timeInMillis = endDate!!
+        lastDay.set(Calendar.HOUR_OF_DAY, 0)
+        lastDay.set(Calendar.MINUTE, 0)
+        lastDay.set(Calendar.SECOND, 0)
 
-        val daysMillis = today.timeInMillis - startDateC.timeInMillis
+        val daysMillis = lastDay.timeInMillis - startDateC.timeInMillis
         currentDaysCount = (daysMillis / (1000 * 60 * 60 * 24)).toInt()
         if((daysMillis % (1000 * 60 * 60 * 24)) != 0L){
             currentDaysCount++
         }
+    }
 
+    fun hasFinished(): Boolean {
+        if(endDate == null)
+            return false
+        val endDateC = Calendar.getInstance()
+        endDateC.timeInMillis = endDate!!
+        endDateC.set(Calendar.HOUR_OF_DAY, 0)
+        endDateC.set(Calendar.MINUTE, 0)
+        endDateC.set(Calendar.SECOND, 0)
 
+        val today = Calendar.getInstance()
+        today.set(Calendar.HOUR_OF_DAY, 0)
+        today.set(Calendar.MINUTE, 0)
+        today.set(Calendar.SECOND, 0)
+
+        return (today.timeInMillis - endDateC.timeInMillis) > (1000 * 60 * 60 * 24)
     }
 
     companion object CREATOR : Creator<Habit> {

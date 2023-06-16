@@ -17,11 +17,11 @@ class LoginViewModel: ViewModel() {
     private val _loginResult = MutableStateFlow(LoginResult.STARTED)
     val loginResult = _loginResult.asStateFlow()
 
-    val _email = MutableStateFlow("qwerty@qwerty.com")
+    val _email = MutableStateFlow("")
     val email = _email.asStateFlow()
     var emailErr: Boolean = false
 
-    val _password = MutableStateFlow("qwerty")
+    val _password = MutableStateFlow("")
     val password = _password.asStateFlow()
     var passwordErr: Boolean = false
 

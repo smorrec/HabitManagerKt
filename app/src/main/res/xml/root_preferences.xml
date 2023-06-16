@@ -28,17 +28,6 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="@string/language_header">
-        <ListPreference
-            android:key="@string/key_language"
-            android:title="@string/languageSetting"
-            android:entries="@array/language_entries"
-            android:entryValues="@array/language_values"
-            android:defaultValue="@string/sortName">
-        </ListPreference>
-    </PreferenceCategory>
-
-    <PreferenceCategory
         android:title="@string/theme_header">
         <SwitchPreferenceCompat
             android:icon="@drawable/ic_night"

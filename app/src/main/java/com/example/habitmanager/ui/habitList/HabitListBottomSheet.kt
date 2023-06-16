@@ -1,4 +1,4 @@
-package com.example.habitmanager.ui.habit
+package com.example.habitmanager.ui.habitList
 
 import android.app.Dialog
 import android.content.DialogInterface
@@ -42,7 +42,10 @@ class HabitListBottomSheet(private val habitListFragment: HabitListFragment) :
             habitListFragment.deleteHabit()
             dismiss()
         }
-        binding!!.complete.setOnClickListener { dismiss() }
+        binding!!.complete.setOnClickListener {
+            habitListFragment.complete()
+            dismiss()
+        }
         binding!!.info.setOnClickListener {
             habitListFragment.viewHabit()
             dismiss()

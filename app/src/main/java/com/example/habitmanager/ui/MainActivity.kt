@@ -3,7 +3,10 @@ package com.example.habitmanager.ui
 import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.ImageDecoder
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.Menu
@@ -17,30 +20,28 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavOptions
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.navigateUp
 import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
-import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.example.habitmanager.data.event.repository.HabitEventRepository
 import com.example.habitmanager.data.habit.repository.HabitRepository
-import com.example.habitmanager.data.user.model.User
 import com.example.habitmanager.data.user.repository.UserRepository
-import com.example.habitmanager.preferencies.UserPrefManager
 import com.example.habitmanager.utils.collectFlow
+import com.example.habitmanager.worker.StandardPriorityNotificationWorker
 import com.example.habitmanagerkt.R
 import com.example.habitmanagerkt.databinding.ActivityMainBinding
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.get
 import java.io.IOException
+import java.lang.Exception
+import java.util.concurrent.TimeUnit
 
 
 class MainActivity : AppCompatActivity() {
@@ -48,8 +49,6 @@ class MainActivity : AppCompatActivity() {
     private var binding: ActivityMainBinding? = null
     private val userRepository: UserRepository = get(UserRepository::class.java)
     private var pickMedia: ActivityResultLauncher<PickVisualMediaRequest>? = null
-    private val habitEventRepository: HabitEventRepository = get(HabitEventRepository::class.java)
-    private val habitRepository: HabitRepository = get(HabitRepository::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +58,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding!!.toolbar)
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
         val navController = navHostFragment.navController
-        appBarConfiguration = AppBarConfiguration.Builder(R.id.MainFragment, R.id.habitListFragment, R.id.loginFragment)
+        appBarConfiguration = AppBarConfiguration.Builder(R.id.MainFragment, R.id.habitListFragment, R.id.loginFragment, R.id.finishedHabitListFragment)
             .setOpenableLayout(binding!!.drawer).build()
 
         setupActionBarWithNavController(this, navController, appBarConfiguration!!)
@@ -100,7 +99,7 @@ class MainActivity : AppCompatActivity() {
                     (headerView.findViewById<View>(R.id.user_image) as ImageView).setImageBitmap(
                         image
                     )
-                    userRepository.updatePicture(uri)
+                    userRepository.updatePicture(image!!)
                 }
             }
     }
@@ -130,7 +129,13 @@ class MainActivity : AppCompatActivity() {
                     return@setOnItemSelectedListener true
                 }
 
-                R.id.completedMenu -> return@setOnItemSelectedListener true
+                R.id.completedMenu -> {
+                    findNavController(
+                        this,
+                        R.id.nav_host_fragment_content_main
+                    ).navigate(R.id.finishedHabitListFragment, null, navOptions)
+                    return@setOnItemSelectedListener true
+                }
             }
             false
         }
@@ -141,7 +146,12 @@ class MainActivity : AppCompatActivity() {
 
         collectFlow(userRepository.userLogged){
             if(it){
-                updateHeader()
+                try {
+                    initWorker()
+                    updateHeader()
+                }catch (e: Exception){
+                    e.printStackTrace()
+                }
             }
         }
 
@@ -157,7 +167,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding!!.navigationView.setNavigationItemSelectedListener { item: MenuItem ->
-            item.isCheckable = true
+            item.isCheckable = false
             when (item.itemId) {
                 R.id.action_mainFragment -> {
                     findNavController(
@@ -179,7 +189,7 @@ class MainActivity : AppCompatActivity() {
                     findNavController(
                         this,
                         R.id.nav_host_fragment_content_main
-                    ).navigate(R.id.MainFragment)
+                    ).navigate(R.id.finishedHabitListFragment)
                     binding!!.bottomNavigation.selectedItemId = R.id.completedMenu
                 }
                 /*
@@ -207,18 +217,38 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun initWorker(){
+        val workManager = WorkManager.getInstance(applicationContext)
+        val request = PeriodicWorkRequestBuilder<StandardPriorityNotificationWorker>(8, TimeUnit.HOURS)
+            .build()
+
+        workManager.enqueueUniquePeriodicWork("StandardPriorityNotificationWorker", ExistingPeriodicWorkPolicy.KEEP, request)
+    }
+
     private fun updateHeader() {
-        val headerView = binding!!.navigationView.getHeaderView(0)
-        (headerView.findViewById<View>(R.id.username) as TextView).text =
-            userRepository.getDisplayName()
-        (headerView.findViewById<View>(R.id.email) as TextView).text =
-            userRepository.getEmail()
-        (headerView.findViewById<View>(R.id.user_image) as ImageView).setImageURI(
-            userRepository.getProfilePicture()
-        )
+        lifecycleScope.launch {
+            val headerView = binding!!.navigationView.getHeaderView(0)
+            (headerView.findViewById<View>(R.id.username) as TextView).text =
+                userRepository.getDisplayName()
+            (headerView.findViewById<View>(R.id.email) as TextView).text =
+                userRepository.getEmail()
+            getBitMap(userRepository.getProfilePicture())?.let{
+                (headerView.findViewById<View>(R.id.user_image) as ImageView).setImageBitmap(it)
+            }
+
+        }
+    }
+
+    private fun getBitMap(byteArray: ByteArray?): Bitmap?{
+        return if(byteArray != null) BitmapFactory.decodeByteArray(byteArray, 0, byteArray!!.size) else null
     }
 
     private fun logOut(){
+        val workManager = WorkManager.getInstance(applicationContext)
+
+        workManager.cancelUniqueWork("StandardPriorityNotificationWorker")
+        workManager.pruneWork()
+
         val navOptions: NavOptions = NavOptions.Builder()
             .setPopUpTo(R.id.nav_graph, true).build()
 
@@ -227,8 +257,6 @@ class MainActivity : AppCompatActivity() {
             R.id.nav_host_fragment_content_main
         ).navigate(R.id.loginFragment, null, navOptions)
 
-
-        Firebase.auth.signOut()
         userRepository.logOut()
     }
 

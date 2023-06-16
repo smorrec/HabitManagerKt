@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import com.example.habitmanager.HabitManagerApplication
 import com.example.habitmanager.data.category.model.Category
 import com.example.habitmanagerkt.R
 
@@ -35,7 +36,7 @@ class CategoryAdapter(
             viewHolder = view.tag as ViewHolder
         }
         viewHolder.imageView!!.setImageResource(list[position].picture!!)
-        viewHolder.textView!!.text = list[position].name
+        viewHolder.textView!!.text = HabitManagerApplication.applicationContext().getString(list[position].name!!)
         return view!!
     }
 

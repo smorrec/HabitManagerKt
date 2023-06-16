@@ -1,4 +1,4 @@
-package com.example.habitmanager.ui.habit
+package com.example.habitmanager.ui.habitManage
 
 import android.text.TextUtils
 import androidx.lifecycle.MutableLiveData
@@ -42,7 +42,6 @@ class HabitManagerViewModel : ViewModel() {
             viewModelScope.launch {
                 if (habitRepository.addHabit(habit, category)) {
                     resultMutableLiveData.setValue(HabitManagerResult.SUCCESS)
-                    //habitEventRepository.addEvent(habit)
                 } else {
                     resultMutableLiveData.setValue(HabitManagerResult.FAILURE)
                 }
@@ -54,7 +53,7 @@ class HabitManagerViewModel : ViewModel() {
         if (validateHabitName(habit) && validateHabitStartDate(habit)) {
             viewModelScope.launch {
                 if (habitRepository.editHabit(habit, category)) {
-                    resultMutableLiveData.setValue(HabitManagerResult.SUCCESS)
+                    resultMutableLiveData.setValue(HabitManagerResult.SUCCESS_EDIT)
                 } else {
                     resultMutableLiveData.setValue(HabitManagerResult.FAILURE)
                 }

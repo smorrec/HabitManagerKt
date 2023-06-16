@@ -23,8 +23,9 @@ class LicenseFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding!!.licenseBtnMPA.setOnClickListener { view: View -> showDescription(view) }
-        binding!!.licenseBtnAbout.setOnClickListener { view: View -> showDescription(view) }
+        binding!!.licenseBtnMPA.setOnClickListener { showDescription(view) }
+        binding!!.licenseBtnAbout.setOnClickListener { showDescription(view) }
+        binding!!.licenseBtnStickers.setOnClickListener { showDescription(view) }
     }
 
     private fun hideDescription(view: View) {
@@ -33,6 +34,7 @@ class LicenseFragment : Fragment() {
         when (view.getId()) {
             R.id.licenseBtnMPA -> content = binding!!.contentMPA
             R.id.licenseBtnAbout -> content = binding!!.contentAbout
+            R.id.licenseBtnStickers -> content = binding!!.contentStickers
         }
         content!!.visibility = View.GONE
         btn.setImageResource(R.drawable.ic_expand)
@@ -45,6 +47,7 @@ class LicenseFragment : Fragment() {
         when (view.getId()) {
             R.id.licenseBtnMPA -> content = binding!!.contentMPA
             R.id.licenseBtnAbout -> content = binding!!.contentAbout
+            R.id.licenseBtnStickers -> content = binding!!.contentStickers
         }
         content!!.visibility = View.VISIBLE
         btn.setImageResource(R.drawable.ic_hide)

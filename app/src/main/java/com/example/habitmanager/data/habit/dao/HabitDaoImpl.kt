@@ -77,6 +77,30 @@ class HabitDaoImpl: HabitDao {
         return list
     }
 
+    override suspend fun selectAllCurrent(): List<Habit> {
+        val list = ArrayList<Habit>()
+        val task = habitDbRef.get()
+        task.await()
+        task.result.children.forEach{
+            val habit = it.getValue(Habit::class.java)!!
+            if(!habit.isFinished)
+                list.add(habit)
+        }
+        return list
+    }
+
+    override suspend fun selectAllCompleted(): List<Habit> {
+        val list = ArrayList<Habit>()
+        val task = habitDbRef.get()
+        task.await()
+        task.result.children.forEach{
+            val habit = it.getValue(Habit::class.java)!!
+            if(habit.isFinished)
+                list.add(habit)
+        }
+        return list
+    }
+
     override suspend fun selectByName(name: String): Habit? {
         var habit :Habit? = null
         selectAll().forEach {

@@ -15,6 +15,10 @@ interface HabitDao {
 
     suspend fun selectAll(): List<Habit>
 
+    suspend fun selectAllCurrent(): List<Habit>
+
+    suspend fun selectAllCompleted(): List<Habit>
+
     suspend fun selectByName(name: String): Habit?
 
 }

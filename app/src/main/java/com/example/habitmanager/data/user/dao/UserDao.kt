@@ -3,7 +3,6 @@ package com.example.habitmanager.data.user.dao
 import com.example.habitmanager.data.user.model.User
 
 interface UserDao {
-    fun prepareDao()
 
     fun create(user: User)
 

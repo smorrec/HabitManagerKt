@@ -117,12 +117,7 @@
     <string name="select_day">Seleccionar día</string>
     <string name="userNameHint">Introduzca su correo electrónico</string>
     <string name="userPassHint">Introduzca su contraseña</string>
-    <string name="sitckersLicense">
-        <a href="https://www.flaticon.es/stickers-gratis/gimnasio">
-            Gimnasio stickers creadas por Stickers - Flaticon
-        </a>
-    </string>
-    <!-- TODO: Remove or change this placeholder text -->
+    <string name="sitckersLicense">Todos los Stickers han sido obtenidos en Flaticon</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="userPass2Hint">Confirme su contraseña</string>
     <string name="emailError">El email no puede estar vacío\n</string>
@@ -137,7 +132,29 @@
     <string name="displayNameHint">Introduzca su nombre de usuario</string>
     <string name="signUpTitle">¡Bienvenido!</string>
     <string name="signUpMsg">Ya solo quedan unos pasos más</string>
-    <string name="eventAvailable">¡Evento disponible!</string>
-    <string name="eventAvailableMsg">"Hoy hace un día fabuloso para %1$s"</string>
+    <string name="eventAvailable">¡Eventos disponibles!</string>
+    <string name="eventAvailableMsg">"Hoy hace un día fabuloso para cumplir tus objetivos, no te olvides de %1$s"</string>
+    <string name="finishedHabits">Archivados</string>
+    <string name="recoverHabit">Recuperar</string>
+    <string name="endDateOnPast">La fecha de finalización del hábito se encuentra en el pasado, actualize la fecha y vuelva a intentarlo</string>
+    <string name="dayOutOfBound">No se disponen de datos para ese día</string>
+    <string name="sport">Actividad Fisica</string>
+    <string name="entertainment">Entretenimiento</string>
+    <string name="language">Idiomas</string>
+    <string name="financies">Finanzas</string>
+    <string name="nutrition">Alimentación</string>
+    <string name="personal_health">Cuidado Personal</string>
+    <string name="emailSend">Email enviado</string>
+    <string name="noEndDate">Sin Fecha</string>
+    <string name="completed">Completado</string>
+    <string name="noCompleted">No completado</string>
+    <string name="daysCompleted">Días completados</string>
+    <string name="daysNotCompleted">Días sin completar</string>
+    <string name="loginError">Error en el inicio de sesión</string>
+    <string name="signUpError">Error en el registro</string>
+    <string name="andOthers">" entre otros."</string>
+    <string name="StickerLicense">Stickers</string>
+    <string name="key_userName">key_userName</string>
+    <string name="title_userName">Nombre de usuario</string>
 
 </resources>

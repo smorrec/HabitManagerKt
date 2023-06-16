@@ -4,6 +4,9 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.InputType
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
@@ -27,8 +30,17 @@ class AccountFragment : PreferenceFragmentCompat() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.account_preferences, rootKey)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         initPreferenciasEmail()
         initPreferenciasPassword()
+        initPreferenciasUserName()
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     private fun initPreferenciasPassword() {
@@ -41,7 +53,6 @@ class AccountFragment : PreferenceFragmentCompat() {
         }
         edPassword.onPreferenceChangeListener =
             Preference.OnPreferenceChangeListener { _: Preference?, newValue: Any? ->
-                Log.d("AAAAAAAAAAAAAA", "CALED")
                 userRepository.updatePassword(newValue as String)
                 true
             }
@@ -51,12 +62,26 @@ class AccountFragment : PreferenceFragmentCompat() {
         val edEmail: EditTextPreference =
             preferenceManager.findPreference(getString(R.string.key_email))!!
         edEmail.setOnBindEditTextListener {
-            edEmail.text = userRepository.getEmail() as String?
+            edEmail.text = ""
         }
         edEmail.onPreferenceChangeListener =
             Preference.OnPreferenceChangeListener { preference: Preference?, newValue: Any? ->
-                Log.d("AAAAAAAAAAAAAA", "CALED" + newValue as String)
                 userRepository.updateEmail(newValue as String)
+                edEmail.text = ""
+                true
+            }
+    }
+
+    private fun initPreferenciasUserName() {
+        val edUserName: EditTextPreference =
+            preferenceManager.findPreference(getString(R.string.key_userName))!!
+        edUserName.setOnBindEditTextListener {
+            edUserName.text = ""
+        }
+        edUserName.onPreferenceChangeListener =
+            Preference.OnPreferenceChangeListener { preference: Preference?, newValue: Any? ->
+                userRepository.updateDisplayName(newValue as String)
+                edUserName.text = ""
                 true
             }
     }

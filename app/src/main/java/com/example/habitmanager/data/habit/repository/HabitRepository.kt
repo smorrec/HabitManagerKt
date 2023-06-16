@@ -15,6 +15,14 @@ class HabitRepository(
         return habitDao.selectAll() as ArrayList<Habit>
     }
 
+    suspend fun getListCompleted(): ArrayList<Habit> {
+        return habitDao.selectAllCompleted() as ArrayList<Habit>
+    }
+
+    suspend fun getListCurrent(): ArrayList<Habit> {
+        return habitDao.selectAllCurrent() as ArrayList<Habit>
+    }
+
     fun addHabit(habit: Habit, category: Int): Boolean {
             habit.categoryId = category
             return habitDao.insert(habit)

@@ -13,19 +13,19 @@ class SignUpViewModel: ViewModel() {
     val signUpResult = _signUpResult.asStateFlow()
 
     private var auth: FirebaseAuth = Firebase.auth
-    val _email = MutableStateFlow("qwerty@qwerty.com")
+    val _email = MutableStateFlow("")
     val email = _email.asStateFlow()
     var emailErr: Boolean = false
 
-    val _displayName = MutableStateFlow("qwerty@qwerty.com")
+    val _displayName = MutableStateFlow("")
     val displayName = _displayName.asStateFlow()
     var displayNameErr: Boolean = false
 
-    val _password = MutableStateFlow("qwerty")
+    val _password = MutableStateFlow("")
     val password = _password.asStateFlow()
     var passwordErr: Boolean = false
 
-    val _repeatedPass = MutableStateFlow("qwerty")
+    val _repeatedPass = MutableStateFlow("")
     val repeatedPass = _repeatedPass.asStateFlow()
     var repeatedPassErr: Boolean = false
 

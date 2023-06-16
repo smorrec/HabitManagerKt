@@ -12,5 +12,5 @@ val repositoryModule = module {
     single { CalendarRepository() }
     single { HabitRepository(get()) }
     single { HabitEventRepository(get()) }
-    single { UserRepository(get()) }
+    single { UserRepository() }
 }

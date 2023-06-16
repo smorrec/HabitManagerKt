@@ -11,5 +11,9 @@
             android:key="@string/key_password"
             android:singleLine="true"
             android:title="@string/title_password"/>
+        <EditTextPreference
+            android:key="@string/key_userName"
+            android:singleLine="true"
+            android:title="@string/title_userName"/>
     </PreferenceCategory>
 </PreferenceScreen>

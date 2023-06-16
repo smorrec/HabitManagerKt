@@ -22,7 +22,6 @@ class CategoryDaoImpl: CategoryDao {
                 val category = snapShot.getValue(Category::class.java)
                 list.add(category!!)
             }
-            Log.d("LISTENER", list.toString())
         }
 
         override fun onCancelled(databaseError: DatabaseError) {

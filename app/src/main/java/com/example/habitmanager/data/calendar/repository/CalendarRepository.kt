@@ -13,7 +13,6 @@ class CalendarRepository {
     }
 
     fun getList(): ArrayList<CalendarItem>{
-        Log.d("LIS", list.toString())
         return list
     }
 

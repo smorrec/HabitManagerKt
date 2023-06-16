@@ -42,11 +42,12 @@ class SignUpFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.btnSignUp.setOnClickListener {
+            initObservers()
             hideKeyboard()
             viewModel.signUp()
         }
 
-        initObservers()
+        //initObservers()
     }
 
     private fun initObservers() {
@@ -112,7 +113,7 @@ class SignUpFragment : Fragment() {
                 }
                 SignUpResult.FAILURE -> Snackbar.make(
                     requireView(),
-                    "Error en el registro",
+                    getString(R.string.signUpError),
                     Snackbar.LENGTH_LONG)
                     .show()
 

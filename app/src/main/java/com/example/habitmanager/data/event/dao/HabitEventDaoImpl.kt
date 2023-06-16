@@ -21,7 +21,6 @@ class HabitEventDaoImpl(
 ): HabitEventDao {
     private lateinit var userDbRef: DatabaseReference
     private lateinit var eventDbRef: DatabaseReference
-    private lateinit var todayEventsDbRef: DatabaseReference
 
     override fun prepareDao() {
         userDbRef = Firebase.database.getReference(Firebase.auth.currentUser!!.uid)

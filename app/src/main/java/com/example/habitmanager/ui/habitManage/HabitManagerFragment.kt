@@ -1,4 +1,4 @@
-package com.example.habitmanager.ui.habit
+package com.example.habitmanager.ui.habitManage
 
 import android.Manifest
 import android.app.PendingIntent
@@ -11,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
@@ -62,6 +61,7 @@ class HabitManagerFragment : BaseFragment() {
         )
         adapter!!.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding!!.CategorySpinner.adapter = adapter
+        binding!!.CategorySpinner.setSelection(binding!!.habit!!.categoryId!!-1)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -91,7 +91,7 @@ class HabitManagerFragment : BaseFragment() {
         initViewModel()
     }
 
-    fun showDatePickerDialog(editText: TextInputEditText) {
+    private fun showDatePickerDialog(editText: TextInputEditText) {
         val builder: CalendarConstraints.Builder = CalendarConstraints.Builder()
         val picker: MaterialDatePicker<Long> = MaterialDatePicker.Builder.datePicker()
             .setCalendarConstraints(builder.setValidator(DateValidatorPointForward.now()).build())
@@ -133,6 +133,10 @@ class HabitManagerFragment : BaseFragment() {
                     if (NotificationPreferencies().isActive()) {
                         showAddNotification(binding!!.habit!!.name)
                     }
+                }
+
+                HabitManagerResult.SUCCESS_EDIT -> {
+                    NavHostFragment.findNavController(this).navigateUp()
                 }
 
                 else -> {}
@@ -203,7 +207,7 @@ class HabitManagerFragment : BaseFragment() {
         override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
         override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
         override fun afterTextChanged(editable: Editable) {
-            when (textView.getId()) {
+            when (textView.id) {
                 R.id.txtHabitName -> binding!!.txtHabitNameLayout.error = null
                 R.id.txtStartDatePicker -> binding!!.txtStartDateLayout.error = null
             }

@@ -12,6 +12,7 @@ import android.view.animation.Animation
 import android.view.animation.Animation.AnimationListener
 import android.widget.AdapterView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,11 +25,17 @@ import com.example.habitmanager.data.habit.dao.HabitDao
 import com.example.habitmanager.data.habit.repository.HabitRepository
 import com.example.habitmanager.ui.MainActivity
 import com.example.habitmanager.ui.base.BaseFragment
+import com.example.habitmanager.ui.finishedHabitList.FinishedHabitListViewModel
+import com.example.habitmanager.utils.collectFlow
 import com.example.habitmanagerkt.R
+import com.example.habitmanagerkt.databinding.FragmentFinishedHabitListBinding
 import com.example.habitmanagerkt.databinding.FragmentMainBinding
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener
 import com.google.android.material.progressindicator.LinearProgressIndicator
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -37,7 +44,11 @@ import org.koin.java.KoinJavaComponent.get
 import java.util.Calendar
 
 class MainFragment : BaseFragment(), CalendarAdapter.OnItemClickListener {
-    private var binding: FragmentMainBinding? = null
+    private var _binding: FragmentMainBinding? = null
+    private val binding get() = _binding!!
+
+    private val viewModel: MainViewModel by viewModels()
+
     private var calendarAdapter: CalendarAdapter? = null
     private var eventAdapter: EventsAdapter? = null
     private var linearLayoutManager: LinearLayoutManager? = null
@@ -45,15 +56,11 @@ class MainFragment : BaseFragment(), CalendarAdapter.OnItemClickListener {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         prepareDaos()
-        requireActivity().window.setFlags(
-            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+
     }
 
     private fun prepareDaos() {
-        val habitDao: HabitDao = get(HabitDao::class.java)
-        habitDao.prepareDao()
-        val habitEventDao: HabitEventDao = get(HabitEventDao::class.java)
-        habitEventDao.prepareDao()
+        viewModel.preareDaos()
     }
 
     override fun onCreateView(
@@ -61,20 +68,33 @@ class MainFragment : BaseFragment(), CalendarAdapter.OnItemClickListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentMainBinding.inflate(inflater)
+        _binding = FragmentMainBinding.inflate(inflater)
         initRvCalendar()
         initRvTasks()
 
         requireActivity().findViewById<View>(R.id.bottom_navigation).visibility = View.VISIBLE
         (requireActivity().findViewById<View>(R.id.progressBar) as LinearProgressIndicator).show()
 
+        requireActivity().window.setFlags(
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         lifecycleScope.launch {
-            eventAdapter!!.setSelectedCalendar(calendarAdapter!!.getItem(0))
+            eventAdapter!!.setSelectedCalendar(calendarAdapter!!.getItem(0),
+                viewModel.getEventsCurrent(calendarAdapter!!.getItem(0)))
+            (requireActivity() as MainActivity).supportActionBar?.title = calendarAdapter!!.getItem(0).fullName
             (requireActivity().findViewById<View>(R.id.progressBar) as LinearProgressIndicator).hide()
-            binding!!.taskList.startLayoutAnimation()
+            binding.taskList.startLayoutAnimation()
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         }
-        return binding!!.root
+
+        collectFlow(viewModel.emptyList){
+            if(it){
+                binding.img.visibility = View.VISIBLE
+            }else{
+                binding.img.visibility = View.GONE
+            }
+        }
+
+        return binding.root
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -92,7 +112,10 @@ class MainFragment : BaseFragment(), CalendarAdapter.OnItemClickListener {
     }
 
     private fun selectCalendar() {
-        val picker: MaterialDatePicker<Long> = MaterialDatePicker.Builder.datePicker().build()
+        val builder: CalendarConstraints.Builder = CalendarConstraints.Builder()
+        val picker: MaterialDatePicker<Long> = MaterialDatePicker.Builder.datePicker()
+            .setCalendarConstraints(builder.setValidator(DateValidatorPointForward.now()).build())
+            .build()
         picker.addOnPositiveButtonClickListener { selection: Long? ->
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = selection!!
@@ -102,9 +125,12 @@ class MainFragment : BaseFragment(), CalendarAdapter.OnItemClickListener {
                     getResources().getDimension(R.dimen.offset).toInt()
                 )
                 lifecycleScope.launch {
-                    eventAdapter!!.setSelectedCalendar(CalendarItem(calendar))
+                    eventAdapter!!.setSelectedCalendar(CalendarItem(calendar),
+                        viewModel.getEventsCurrent(CalendarItem(calendar)))
                 }
-
+                (requireActivity() as MainActivity).supportActionBar?.title = CalendarItem(calendar).fullName
+            }else{
+                Snackbar.make(requireView(), R.string.dayOutOfBound, Snackbar.LENGTH_SHORT).show()
             }
         }
         picker.show(requireActivity().supportFragmentManager, "datePicker")
@@ -112,21 +138,21 @@ class MainFragment : BaseFragment(), CalendarAdapter.OnItemClickListener {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        binding = null
+        _binding = null
     }
 
     private fun initRvCalendar() {
         calendarAdapter = CalendarAdapter(this)
         linearLayoutManager = LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false)
-        binding!!.calendarList.layoutManager = linearLayoutManager
-        binding!!.calendarList.adapter = calendarAdapter
+        binding.calendarList.layoutManager = linearLayoutManager
+        binding.calendarList.adapter = calendarAdapter
     }
 
     private fun initRvTasks() {
         eventAdapter = EventsAdapter()
         val linearLayoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
-        binding!!.taskList.layoutManager = linearLayoutManager
-        binding!!.taskList.adapter = eventAdapter
+        binding.taskList.layoutManager = linearLayoutManager
+        binding.taskList.adapter = eventAdapter
     }
 
     override fun onClick(view: View?, position: Int) {
@@ -135,9 +161,11 @@ class MainFragment : BaseFragment(), CalendarAdapter.OnItemClickListener {
         lifecycleScope.launch {
             requireActivity().window.setFlags(
             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-            eventAdapter!!.setSelectedCalendar(calendarAdapter!!.getItem(position))
+            eventAdapter!!.setSelectedCalendar(calendarAdapter!!.getItem(position),
+                viewModel.getEventsCurrent(calendarAdapter!!.getItem(position)))
+            (requireActivity() as MainActivity).supportActionBar?.title = calendarAdapter!!.getItem(position).fullName
             progressBar.hide()
-            binding!!.taskList.startLayoutAnimation()
+            binding.taskList.startLayoutAnimation()
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         }
     }

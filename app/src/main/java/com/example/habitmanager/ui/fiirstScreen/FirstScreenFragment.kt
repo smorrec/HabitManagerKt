@@ -16,14 +16,10 @@ class FirstScreenFragment : Fragment() {
     private var _binding: FragmentFirstScreenBinding? = null
     private val binding get() = _binding!!
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         _binding = FragmentFirstScreenBinding.inflate(inflater, container, false)
         val ims = HabitManagerApplication.applicationContext().assets.open("deporte.png")

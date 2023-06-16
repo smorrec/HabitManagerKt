@@ -38,7 +38,6 @@ class HabitEventRepository(
     suspend fun getEvent(selectedCalendar: CalendarItem, habit: Habit): HabitEvent {
         var event = HabitEvent()
         if(habit.hasTask(selectedCalendar)) {
-            Log.d("AAAAAAAAAAAAAA", "SI TIENEEEEEEEEEEEEEEE")
             event = habitEventDao.getEvent(selectedCalendar, habit)
         }
         return event

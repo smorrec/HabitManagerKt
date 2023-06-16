@@ -14,10 +14,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
         initPreferenciesNotification()
         initPreferenciesTheme()
         initPreferenciesList()
-        initPreferenciesLanguage()
+        //initPreferenciesLanguage()
     }
 
-
+/*
     private fun initPreferenciesLanguage() {
         val listPreference =
             preferenceManager.findPreference<Preference>(getString(R.string.key_language))
@@ -29,6 +29,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 true
             }
     }
+ */
 
     private fun initPreferenciesList() {
         val listPreference =

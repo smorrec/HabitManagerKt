@@ -1,50 +1,46 @@
-package com.example.habitmanager.ui.habit
+package com.example.habitmanager.ui.finishedHabitList
 
 import android.Manifest
-import android.app.Dialog
 import android.content.DialogInterface
 import android.content.pm.PackageManager
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.habitmanager.HabitManagerApplication
 import com.example.habitmanager.adapter.HabitAdapter
-import com.example.habitmanager.data.event.repository.HabitEventRepository
 import com.example.habitmanager.data.habit.model.Habit
 import com.example.habitmanager.preferencies.ListPreferencies
+import com.example.habitmanager.ui.habitList.HabitListViewModel
+import com.example.habitmanager.utils.collectFlow
 import com.example.habitmanagerkt.R
+import com.example.habitmanagerkt.databinding.FragmentFinishedHabitListBinding
 import com.example.habitmanagerkt.databinding.FragmentHabitListBinding
-import com.example.habitmanagerkt.databinding.ModalBottomSheetBinding
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import org.koin.java.KoinJavaComponent.get
 
-class HabitListFragment : Fragment(), HabitAdapter.OnItemClickListener {
-    private var binding: FragmentHabitListBinding? = null
-    private var viewModel: HabitListViewModel? = null
+class FinishedHabitListFragment : Fragment(), HabitAdapter.OnItemClickListener {
+    private var _binding: FragmentFinishedHabitListBinding? = null
+    private val binding get() = _binding!!
+    private val viewModel: FinishedHabitListViewModel by viewModels()
+
     var adapter: HabitAdapter? = null
     val TAG = "habitList"
     val BOTTOM_SHEET_TAG = "bottomSheet"
@@ -58,13 +54,17 @@ class HabitListFragment : Fragment(), HabitAdapter.OnItemClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentHabitListBinding.inflate(inflater)
-        return binding!!.root
+        _binding = FragmentFinishedHabitListBinding.inflate(inflater)
+
+        val iconis = HabitManagerApplication.applicationContext().assets.open("pensamiento.png")
+        val iconDrawable = Drawable.createFromStream(iconis, null)
+        binding.img.setImageDrawable(iconDrawable)
+
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding!!.fab.setOnClickListener { view1: View? -> habitManagerFragment(null) }
         initRvHabit()
         initViewModel()
     }
@@ -94,34 +94,42 @@ class HabitListFragment : Fragment(), HabitAdapter.OnItemClickListener {
             activity,
             RecyclerView.VERTICAL, false
         )
-        binding!!.rvHabit.layoutManager = linearLayoutManager
-        binding!!.rvHabit.adapter = adapter
+        binding.rvHabit.layoutManager = linearLayoutManager
+        binding.rvHabit.adapter = adapter
     }
 
     private fun initViewModel() {
-        viewModel = ViewModelProvider(this).get(HabitListViewModel::class.java)
-        viewModel!!.liveDataList.observe(viewLifecycleOwner) { liveDataList ->
+        viewModel.liveDataList.observe(viewLifecycleOwner) { liveDataList ->
+            adapter!!.updateData(liveDataList)
             if(liveDataList.isNotEmpty()){
-                adapter!!.updateData(liveDataList)
                 sortList()
             }
         }
-        viewModel!!.deletedHabit.observe(viewLifecycleOwner) { habit: Habit ->
-            if (viewModel!!.isUndoEnabled) {
+        viewModel.deletedHabit.observe(viewLifecycleOwner) { habit: Habit ->
+            if (viewModel.isUndoEnabled) {
                 Snackbar.make(
                     requireView(),
                     getString(R.string.undoText) + habit.name,
                     Snackbar.LENGTH_SHORT
                 )
                     .setAction(R.string.undo) {
-                        viewModel!!.undo()
+                        viewModel.undo()
                         adapter!!.undo(habit)
                     }
                     .show()
-                viewModel!!.isUndoEnabled = false
+                viewModel.isUndoEnabled = false
             }
         }
-        viewModel!!.getList()
+
+        collectFlow(viewModel.emptyList){
+            if(it){
+                binding.img.visibility = View.VISIBLE
+            }else{
+                binding.img.visibility = View.GONE
+            }
+        }
+
+        viewModel.getList()
     }
 
     private fun sortList() {
@@ -134,7 +142,7 @@ class HabitListFragment : Fragment(), HabitAdapter.OnItemClickListener {
 
     fun habitManagerFragment(bundle: Bundle?) {
         NavHostFragment.findNavController(this)
-            .navigate(R.id.action_habitListFragment_to_habitManagerFragment, bundle)
+            .navigate(R.id.action_finishedHabitListFragment_to_habitManagerFragment, bundle)
     }
 
     fun deleteHabit() {
@@ -202,7 +210,7 @@ class HabitListFragment : Fragment(), HabitAdapter.OnItemClickListener {
 
     fun viewHabit() {
         NavHostFragment.findNavController(this)
-            .navigate(R.id.action_habitListFragment_to_habitViewFragment, setBundle())
+            .navigate(R.id.action_finishedHabitListFragment_to_habitViewFragment, setBundle())
     }
 
     fun setBundle(): Bundle {
@@ -214,11 +222,23 @@ class HabitListFragment : Fragment(), HabitAdapter.OnItemClickListener {
 
     override fun onItemClick(view: View?, position: Int) {
         if (!requireView().isSelected) {
-            val modalBottomSheet = HabitListBottomSheet(this)
+            val modalBottomSheet = FinishedHabitListBottomSheet(this)
             modalBottomSheet.show(requireActivity().supportFragmentManager, BOTTOM_SHEET_TAG)
 
         }
         selectedHabit = position
+    }
+
+    fun recover() {
+        val habit = adapter!!.getItem(selectedHabit)
+        if (habit.hasFinished()){
+            Snackbar.make(requireView(), R.string.endDateOnPast, Snackbar.LENGTH_SHORT).show()
+        }else {
+            habit.isFinished = false
+            viewModel.edit(habit)
+            NavHostFragment.findNavController(this)
+                .navigate(R.id.habitListFragment)
+        }
     }
 
     override fun onResume() {

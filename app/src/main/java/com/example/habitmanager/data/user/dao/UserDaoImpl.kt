@@ -9,10 +9,6 @@ import com.google.firebase.ktx.Firebase
 class UserDaoImpl: UserDao {
     private lateinit var userDbRef: DatabaseReference
 
-    override fun prepareDao() {
-
-    }
-
     override fun create(user: User){
         userDbRef = Firebase.database.getReference(user.firebaseUser!!.uid)
     }

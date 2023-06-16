@@ -29,7 +29,7 @@
     </fragment>
     <fragment
         android:id="@+id/habitListFragment"
-        android:name="com.example.habitmanager.ui.habit.HabitListFragment"
+        android:name="com.example.habitmanager.ui.habitList.HabitListFragment"
         android:label="@string/Habit"
         tools:layout="@layout/fragment_habit_list" >
         <action
@@ -42,7 +42,7 @@
     </fragment>
     <fragment
         android:id="@+id/habitViewFragment"
-        android:name="com.example.habitmanager.ui.habit.HabitViewFragment"
+        android:name="com.example.habitmanager.ui.habitDetails.HabitDetailsFragment"
         android:label="@string/HabitView" >
     </fragment>
     <fragment
@@ -52,7 +52,7 @@
         tools:layout="@layout/fragment_about_us"/>
     <fragment
         android:id="@+id/habitManagerFragment"
-        android:name="com.example.habitmanager.ui.habit.HabitManagerFragment"
+        android:name="com.example.habitmanager.ui.habitManage.HabitManagerFragment"
         android:label="@string/HabitManager" />
     <fragment
         android:id="@+id/settingsFragment"
@@ -91,5 +91,16 @@
             app:destination="@id/MainFragment"
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/finishedHabitListFragment"
+        android:name="com.example.habitmanager.ui.finishedHabitList.FinishedHabitListFragment"
+        android:label="@string/finishedHabits" >
+        <action
+            android:id="@+id/action_finishedHabitListFragment_to_habitViewFragment"
+            app:destination="@id/habitViewFragment" />
+        <action
+            android:id="@+id/action_finishedHabitListFragment_to_habitManagerFragment"
+            app:destination="@id/habitManagerFragment" />
     </fragment>
 </navigation>

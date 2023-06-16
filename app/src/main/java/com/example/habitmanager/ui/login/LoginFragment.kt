@@ -45,6 +45,7 @@ class LoginFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.btnLogin.setOnClickListener {
+            initCollectors()
             hideKeyboard()
             viewModel.login()
         }
@@ -53,6 +54,9 @@ class LoginFragment: Fragment() {
             NavHostFragment.findNavController(this).navigate(R.id.action_loginFragment_to_signUpFragment)
         }
 
+    }
+
+    private fun initCollectors(){
         collectFlow(viewModel.email){
             if(it.isBlank()){
                 binding.emailLayout.isErrorEnabled = true
@@ -89,11 +93,14 @@ class LoginFragment: Fragment() {
                     viewModel.consumeLoginFlow()
                 }
 
-                LoginResult.FAILURE -> Snackbar.make(
-                    requireView(),
-                    "Error en el inicio de sesión",
-                    Snackbar.LENGTH_LONG)
-                    .show()
+                LoginResult.FAILURE -> {
+                    Snackbar.make(
+                        requireView(),
+                        getString(R.string.loginError),
+                        Snackbar.LENGTH_LONG)
+                        .show()
+                    viewModel.consumeLoginFlow()
+                }
 
                 else -> {}
             }

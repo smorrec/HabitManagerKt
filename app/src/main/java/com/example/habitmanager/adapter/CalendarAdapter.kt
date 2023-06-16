@@ -1,14 +1,11 @@
 package com.example.habitmanager.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.habitmanager.data.calendar.model.CalendarItem
 import com.example.habitmanager.data.calendar.repository.CalendarRepository
-import com.example.habitmanager.data.user.model.User
-import com.example.habitmanager.data.user.repository.UserRepository
 import com.example.habitmanagerkt.databinding.CalendarItemBinding
 import org.koin.java.KoinJavaComponent.get
 import java.util.Calendar
